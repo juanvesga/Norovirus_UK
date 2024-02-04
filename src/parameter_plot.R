@@ -96,7 +96,7 @@ parameter_plot<-function(mcmc,nsim,scale,scenario){
                    infection4=pars$imm_yr)
     title_text<-"Immunity: Drop one infection, No reinfection"}
   
-
+  
   # use ggplot2 to plot a boxplot for each infection event
   
   df_m<-reshape2::melt(df)
@@ -141,6 +141,32 @@ parameter_plot<-function(mcmc,nsim,scale,scenario){
     labs(title = title_text, x = "Infection event", y = "Average waning (Years)")+
     # add the value as text at the top of each bar
     geom_text(aes(label=round(value,2)), vjust=-0.5, size=3.5)
+  
+  
+  
+#  Grid plot
+  # browser()
+  # library("GGally")
+  # dat<-pars[,c(1,2,3,4,5,11)]
+  # my_fn <- function(data, mapping, ...){
+  #   p <- ggplot(data = data, mapping = mapping) +
+  #     stat_density2d(aes(fill=..density..), geom="tile", contour = FALSE) +
+  #     scale_fill_gradientn(colours=hcl.colors(100,palette = "zissou1"))
+  #   p
+  # }
+  # 
+  # gridPlot<-ggpairs(dat, lower=list(continuous=my_fn),
+  #                   diag=list(continuous=wrap("barDiag")),
+  #                   upper=list(continuous="blank"))
+  # 
+  # windows()
+  # gridPlot
+  # 
+  
+  
+  
+  
+  
   
   
   return(

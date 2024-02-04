@@ -34,15 +34,12 @@ make_transform <- function(c_mat,
       aduRR = theta[["aduRR"]]/scaling_fac[["aduRR"]],
       imm_yr = theta[["imm_yr"]]/scaling_fac[["imm_yr"]], 
       imm_fac = theta[["imm_fac"]]/scaling_fac[["imm_fac"]], 
-      w1_1 = theta[["w1_1"]]/scaling_fac[["w1_1"]],
       repfac_0=theta[["repfac_0"]]/scaling_fac[["repfac_0"]],
       repfac_5=theta[["repfac_5"]]/scaling_fac[["repfac_5"]],
       repfac_15=theta[["repfac_15"]]/scaling_fac[["repfac_15"]],
       repfac_65p=theta[["repfac_65p"]]/scaling_fac[["repfac_65p"]],
-      crossp_12=theta[["crossp_12"]]/scaling_fac[["crossp_12"]],
-      crossp_21=theta[["crossp_21"]]/scaling_fac[["crossp_21"]],
-      crossp_34=theta[["crossp_34"]]/scaling_fac[["crossp_34"]],
-      crossp_43=theta[["crossp_43"]]/scaling_fac[["crossp_43"]]
+      crossp_GI=theta[["crossp_GI"]]/scaling_fac[["crossp_GI"]],
+      crossp_GII=theta[["crossp_GII"]]/scaling_fac[["crossp_GII"]]
     )
     
     

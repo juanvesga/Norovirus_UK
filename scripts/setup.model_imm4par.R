@@ -506,8 +506,8 @@ params<-list(
   repfac= 287,# factor to amplify reported to community
   repfac_65= 287,# factor to amplify reported to community
   adult_beta=1, # adult with adult transmission scalar
-  w1 = 0.15, # sesonality (if 0 not seasonal)
-  w2 = 2.2/12, # 
+  w1_1 = 0.8, # sesonality (if 0 not seasonal)
+  w2 = -2, # 
   alpha = 1, # relative suscept in R compartment 
   # simulation
   dt=0.5,
@@ -523,15 +523,12 @@ params<-list(
     imm_fac1 = 100,
     imm_fac2 = 100,
     imm_fac3 = 100,
-    w1_1 = 100,
     repfac_0=0.25,
     repfac_5=0.25,
     repfac_15=0.25,
     repfac_65p=0.25,
-    crossp_12 = 1000,
-    crossp_21 = 1000,
-    crossp_34 = 1000,
-    crossp_43 = 1000
+    crossp_GI = 1000,
+    crossp_GII = 1000
   ),
   
   vac_camp_cov= c(seq(1,length(ages),1)*0),

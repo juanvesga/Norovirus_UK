@@ -2138,10 +2138,10 @@ p_R1A1[] <- 1 - exp(-lambda_1[i] * (1-alpha) * dt)
 p_R2A2[] <- 1 - exp(-lambda_2[i] * (1-alpha) * dt)
 p_R3A3[] <- 1 - exp(-lambda_3[i]  *(1-alpha) * dt)
 p_R4A4[] <- 1 - exp(-lambda_4[i] * (1-alpha) * dt)
-p_R1_to_E2_gi[] <- 1 - exp(-lambda_2[i] * (1-crossp_21) * dt)
-p_R2_to_E1_gi[] <- 1 - exp(-lambda_1[i] * (1-crossp_12) * dt)
-p_R3_to_E4_gii[] <- 1 - exp(-lambda_4[i] * (1-crossp_43) * dt)
-p_R4_to_E3_gii[] <- 1 - exp(-lambda_3[i] * (1-crossp_34) * dt)
+p_R1_to_E2_gi[] <- 1 - exp(-lambda_2[i] * (1-crossp_GI) * dt)
+p_R2_to_E1_gi[] <- 1 - exp(-lambda_1[i] * (1-crossp_GI) * dt)
+p_R3_to_E4_gii[] <- 1 - exp(-lambda_4[i] * (1-crossp_GII) * dt)
+p_R4_to_E3_gii[] <- 1 - exp(-lambda_3[i] * (1-crossp_GII) * dt)
 p_EI   <- 1 - exp(-(1/epsilon) * dt) # E to I
 p_IA_5    <- 1 - exp(-(1/theta_5) * dt) # I to A
 p_IA_5p   <- 1 - exp(-(1/theta_5p) * dt) # I to A
@@ -2373,63 +2373,115 @@ contact_matrix[,]<- if (comix_switcher >0)(
 
 
 # infectives GI3
-c1_ij[, ] <- (I1[j]+I12[j] + 
-                I13[j]+I14[j] +
-                I123[j]+I124[j] + 
-                I134[j]+I1234[j] + 
-                rr_inf_asymp * (A1[j]+A12[j] + 
-                                  A13[j]+A14[j] +
-                                  A123[j]+A124[j] + 
-                                  A134[j]+A1234[j] +
-                                  E1[j]+E12[j] + 
-                                  E13[j]+E14[j] +
-                                  E123[j]+E124[j] + 
-                                  E134[j]+E1234[j]) ) * contact_matrix[i,j]
+c1_ij[, ] <- if (j>4) (I1[j]+I12[j] + 
+                         I13[j]+I14[j] +
+                         I123[j]+I124[j] + 
+                         I134[j]+I1234[j] + 
+                         rr_inf_asymp * (A1[j]+A12[j] + 
+                                           A13[j]+A14[j] +
+                                           A123[j]+A124[j] + 
+                                           A134[j]+A1234[j] +
+                                           E1[j]+E12[j] + 
+                                           E13[j]+E14[j] +
+                                           E123[j]+E124[j] + 
+                                           E134[j]+E1234[j]) ) * contact_matrix[i,j] * aduRR else
+                                             (I1[j]+I12[j] + 
+                                                I13[j]+I14[j] +
+                                                I123[j]+I124[j] + 
+                                                I134[j]+I1234[j] + 
+                                                rr_inf_asymp * (A1[j]+A12[j] + 
+                                                                  A13[j]+A14[j] +
+                                                                  A123[j]+A124[j] + 
+                                                                  A134[j]+A1234[j] +
+                                                                  E1[j]+E12[j] + 
+                                                                  E13[j]+E14[j] +
+                                                                  E123[j]+E124[j] + 
+                                                                  E134[j]+E1234[j]) ) * contact_matrix[i,j]
+
 
 
 # infectives GI
-c2_ij[, ] <- (I2[j]+I21[j]+
-                I23[j]+I24[j]+
-                I213[j]+I214[j]+
-                I234[j]+I2134[j]+
-                rr_inf_asymp * (A2[j]+A21[j]+
-                                  A23[j]+A24[j]+
-                                  A213[j]+A214[j]+
-                                  A234[j]+A2134[j]+
-                                  E2[j]+E21[j]+
-                                  E23[j]+E24[j]+
-                                  E213[j]+E214[j]+
-                                  E234[j]+E2134[j])) * contact_matrix[i,j]
+c2_ij[, ] <- if (j>4) (I2[j]+I21[j]+
+                         I23[j]+I24[j]+
+                         I213[j]+I214[j]+
+                         I234[j]+I2134[j]+
+                         rr_inf_asymp * (A2[j]+A21[j]+
+                                           A23[j]+A24[j]+
+                                           A213[j]+A214[j]+
+                                           A234[j]+A2134[j]+
+                                           E2[j]+E21[j]+
+                                           E23[j]+E24[j]+
+                                           E213[j]+E214[j]+
+                                           E234[j]+E2134[j])) * contact_matrix[i,j] * aduRR else
+                                             (I2[j]+I21[j]+
+                                                I23[j]+I24[j]+
+                                                I213[j]+I214[j]+
+                                                I234[j]+I2134[j]+
+                                                rr_inf_asymp * (A2[j]+A21[j]+
+                                                                  A23[j]+A24[j]+
+                                                                  A213[j]+A214[j]+
+                                                                  A234[j]+A2134[j]+
+                                                                  E2[j]+E21[j]+
+                                                                  E23[j]+E24[j]+
+                                                                  E213[j]+E214[j]+
+                                                                  E234[j]+E2134[j])) * contact_matrix[i,j]
+
 
 
 # infectives GII4
-c3_ij[, ] <- (I3[j]+I31[j]+
-                I32[j]+I34[j]+
-                I312[j]+I314[j]+
-                I324[j]+I3124[j]+ 
-                rr_inf_asymp *(A3[j]+A31[j]+
-                                 A32[j]+A34[j]+
-                                 A312[j]+A314[j]+
-                                 A324[j]+A3124[j]+
-                                 E3[j]+E31[j]+
-                                 E32[j]+E34[j]+
-                                 E312[j]+E314[j]+
-                                 E324[j]+E3124[j]) ) * contact_matrix[i,j]
+c3_ij[, ] <- if (j>4 )(I3[j]+I31[j]+
+                         I32[j]+I34[j]+
+                         I312[j]+I314[j]+
+                         I324[j]+I3124[j]+ 
+                         rr_inf_asymp *(A3[j]+A31[j]+
+                                          A32[j]+A34[j]+
+                                          A312[j]+A314[j]+
+                                          A324[j]+A3124[j]+
+                                          E3[j]+E31[j]+
+                                          E32[j]+E34[j]+
+                                          E312[j]+E314[j]+
+                                          E324[j]+E3124[j]) ) * contact_matrix[i,j] * aduRR else
+                                            (I3[j]+I31[j]+
+                                               I32[j]+I34[j]+
+                                               I312[j]+I314[j]+
+                                               I324[j]+I3124[j]+ 
+                                               rr_inf_asymp *(A3[j]+A31[j]+
+                                                                A32[j]+A34[j]+
+                                                                A312[j]+A314[j]+
+                                                                A324[j]+A3124[j]+
+                                                                E3[j]+E31[j]+
+                                                                E32[j]+E34[j]+
+                                                                E312[j]+E314[j]+
+                                                                E324[j]+E3124[j]) ) * contact_matrix[i,j]
+
 
 
 # infectives GII
-c4_ij[, ] <- (I4[j]+I41[j]+
-                I42[j]+I43[j]+
-                I412[j]+I413[j]+
-                I423[j]+I4123[j] +
-                rr_inf_asymp *(E4[j]+E41[j]+
-                                 E42[j]+E43[j]+
-                                 E412[j]+E413[j]+
-                                 E423[j]+E4123[j]+
-                                 A4[j]+A41[j]+
-                                 A42[j]+A43[j]+
-                                 A412[j]+A413[j]+
-                                 A423[j]+A4123[j]) ) * contact_matrix[i,j]
+c4_ij[, ] <- if (j>4) (I4[j]+I41[j]+
+                         I42[j]+I43[j]+
+                         I412[j]+I413[j]+
+                         I423[j]+I4123[j] +
+                         rr_inf_asymp *(E4[j]+E41[j]+
+                                          E42[j]+E43[j]+
+                                          E412[j]+E413[j]+
+                                          E423[j]+E4123[j]+
+                                          A4[j]+A41[j]+
+                                          A42[j]+A43[j]+
+                                          A412[j]+A413[j]+
+                                          A423[j]+A4123[j]) ) * contact_matrix[i,j] * aduRR else
+                                            (I4[j]+I41[j]+
+                                               I42[j]+I43[j]+
+                                               I412[j]+I413[j]+
+                                               I423[j]+I4123[j] +
+                                               rr_inf_asymp *(E4[j]+E41[j]+
+                                                                E42[j]+E43[j]+
+                                                                E412[j]+E413[j]+
+                                                                E423[j]+E4123[j]+
+                                                                A4[j]+A41[j]+
+                                                                A42[j]+A43[j]+
+                                                                A412[j]+A413[j]+
+                                                                A423[j]+A4123[j]) ) * contact_matrix[i,j]
+
 
 
 
@@ -2441,11 +2493,11 @@ beta_2_t <- beta_2 *(1 + w1_1*cos((2*pi*time)/364 + (w2/12)*pi))
 beta_3_t <- beta_3 *(1 + w1_1*cos((2*pi*time)/364 + (w2/12)*pi))
 beta_4_t <- beta_4 *(1 + w1_1*cos((2*pi*time)/364 + (w2/12)*pi))
 
-# Force of Infection by strain and age (reduce foi in adults by 90%) 
-lambda_1[] <- if (i>7) beta_1_t  * aduRR * sum(c1_ij[i , ]) else  beta_1_t   * sum(c1_ij[i , ])
-lambda_2[] <- if (i>7) beta_2_t  * aduRR * sum(c2_ij[i , ]) else  beta_2_t   * sum(c2_ij[i , ])
-lambda_3[] <- if (i>7) beta_3_t  * aduRR * sum(c3_ij[i , ]) else  beta_3_t   * sum(c3_ij[i , ])
-lambda_4[] <- if (i>7) beta_4_t  * aduRR * sum(c4_ij[i , ]) else  beta_4_t   * sum(c4_ij[i , ])
+
+lambda_1[] <-  beta_1_t   * sum(c1_ij[i , ])
+lambda_2[] <-  beta_2_t   * sum(c2_ij[i , ])
+lambda_3[] <-  beta_3_t   * sum(c3_ij[i , ])
+lambda_4[] <-  beta_4_t   * sum(c4_ij[i , ])
 
 
 
@@ -3909,16 +3961,14 @@ sigma <- user(15) # duration asymp shedding
 imm_yr   <- user(5.1)     # duration immunity
 imm_fac   <- 1# user(2)     # duration immunity
 rr_inf_asymp   <- user(0.05) # rel infect asymptomatic 
-crossp_21<-user(0.05) # cross_protection prob from j to k
-crossp_12<-user(0.05) # cross_protection prob from k to j
-crossp_43<-user(0.05) # cross_protection prob from j to k
-crossp_34<-user(0.05) # cross_protection prob from k to j
+crossp_GI<-user(0.05) # cross_protection prob from j to k
+crossp_GII<-user(0.05) # cross_protection prob from k to j
 p_nonsecretor<-user(0.2) # Fraction immune genetically
-w1_1 <- 0.3#user(0.15) # sesonality
+w1_1 <- user(0.8) # sesonality
 # w1_2 <-user(0.15) # sesonality
 # w1_3 <-user(0.15) # sesonality
 # w1_4 <-user(0.15) # sesonality
-w2 <- -3;#user(0.0) # sesonality
+w2 <- user(-2) # sesonality
 pi <-user(3.141593)
 alpha<-user(0)# rel susc in R 
 mu[]  <- user()      # mortality rates 

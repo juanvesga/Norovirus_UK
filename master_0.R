@@ -15,20 +15,25 @@ library(profvis)
 library(lubridate)
 library(mcstate)
 
+
+# Set outputs path
+
+output_dir<- paste(here(),"_output", sep="")
+
 # Set up model parameters -------------------------------------------------
-#actions<-c("MCMC","RUN_SIMS")
+actions<-c("MCMC","RUN_SIMS")
 #actions<-"MCMC"
 #actions<-"MCMC_DX"
 #actions<- "RUN_SIMS"
-actions<-"PLOT_FITS"
+#actions<-"PLOT_FITS"
 #actions<- "DYNAMICS"
 #actions<- "DIC"
 
 # Set model scenario ------------------------------------------------------
-#scenarios<- c("imm1par","imm2par","imm4par","immdrop","immdrop_noreinfection","imm2par_noreinfection")
+scenarios<- c("imm1par","imm2par","imm4par","immdrop","immdrop_noreinfection","imm2par_noreinfection")
 #scenarios<-"imm1par"
 #scenarios<-"imm2par"
-scenarios<-"imm4par"
+#scenarios<-"imm4par"
 #scenarios<- "imm2par_noreinfection"
 #scenarios<-"immdrop"
 #scenarios<-"immdrop_noreinfection"
@@ -36,10 +41,10 @@ scenarios<-"imm4par"
 
 
 # MCMC parameters 
-nsamples<-500
-n_steps  <- 40000
-n_out <- 1000
-start_previous<-TRUE
+nsamples<-500 # from the posterior
+n_steps  <- 50000
+n_out <- 5000
+start_previous<-FALSE
 burnin_prop<-0.5
 chain_selection<-c(1,2,3,4)
 
@@ -55,6 +60,8 @@ for (aa in 1:length(actions)){
     source(here("src","utility_functions.R"))
     source(here("scripts","load_data.R"))
     source(here("src","model_functions.R"))
+    source(here("src","run_simulations.R"))
+    
     
     if(scenario == "imm4par"){
       
@@ -144,7 +151,7 @@ for (aa in 1:length(actions)){
     } else if(action=="MCMC_DX"){
       
       
-      load(here("output",paste0("chains_",scenario,".RData"))) 
+      load(paste0(output_dir,"/chains_",scenario,".RData")) 
       
       
       source(here("src","parameter_plot.R"))
@@ -157,6 +164,8 @@ for (aa in 1:length(actions)){
       gridExtra::grid.arrange(figs$immplot)
       
       gridExtra::grid.arrange(figs$immbox)
+      
+   
       
       #   
       # mcmc1 <- coda::as.mcmc(cbind(processed_chains$probabilities, processed_chains$pars))
@@ -177,76 +186,20 @@ for (aa in 1:length(actions)){
     }else if(action=="RUN_SIMS"){
       
       
-      load(here("output",paste0("chains_",scenario,".RData"))) 
+      load(paste0(output_dir,"/chains_",scenario,".RData"))
       
       
-      single_run <- function(single_par,func,footransform) {
-        
-        p<-footransform(single_par)   
-        func$run(p, save_history = TRUE)
-        
-        return(sims<-func$history())
-        
-      }
-      
-      # write a function to run the model with the parameters from the MCMC in parallel
-      
-      # run_model<-function(i,matrix_par,func,footransform){
-      #   
-      #   par<-matrix_par[i,]
-      #   # run the model
-      #   sims<-single_run(par,func,footransform)
-      #   
-      #   # extract the output
-      #   out<-sims
-      #   
-      #   # add the parameters to the output
-      #   out<-cbind(out,x)
-      #   
-      #   # return the output
-      #   return(out)
-      #   
-      # }
+    
+
       
       id<-which(processed_chains$chain ==chain_selection)
       par<-processed_chains$pars[id,]
       M <- par[sample(nrow(par), nsamples), ]
       
+    
+      out<-run_simulations(nsamples,M,filter2,footransform)
       
-      
-      # use "parallel" package to run the model in parallel
-      # library("parallel")
-      # cl <- makeCluster(6)
-      # clusterExport(cl, "single_run")
-      # res_par <- mclapply(x=1:nsamples, FUN = run_model,M,filter2,footransform, mc.cores = no.of.cores)
-      # stopCluster(cl)
-      # 
-      
-      # run the model for each set of parameters in the MCMC
-      tmp<-single_run(M[1,],filter2,footransform)
-      nst<-dim(tmp)[1]
-      nt<-dim(tmp)[3]
-      idx<- seq(1, nst, 1)
-      names(idx)<- paste(row.names(tmp))
-      idx<-as.list(idx)
-      
-      runs<- array(0, c(nst, nsamples, nt));  
-      
-      pb = txtProgressBar(min = 0, max = (dim(M)[1]), initial = 0) 
-      
-      for (ii in 1:(dim(M)[1])){
-        setTxtProgressBar(pb,ii)
-        runs[,ii,]<-single_run(M[ii,],filter2,footransform)
-        
-      }
-      
-      
-      out<-list(
-        idx=idx,
-        runs=runs,
-        pars=M)
-      
-      save(out,file=here("output",paste0("runs_mcmc_",scenario,".Rdata")))
+      save(out,file=paste0(output_dir,"/runs_mcmc_",scenario,".Rdata"))
       
       
       rm(processed_chains)
@@ -258,7 +211,7 @@ for (aa in 1:length(actions)){
     } else if(action=="PLOT_FITS"){
       
       
-      load(here("output",paste0("runs_mcmc_",scenario,".RData"))) 
+      load(paste0(output_dir,"/runs_mcmc_",scenario,".RData")) 
       
       source(here("scripts","plot_model_fits.R"))
       

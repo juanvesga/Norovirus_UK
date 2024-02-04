@@ -3,7 +3,7 @@
 ######################################################
 
 #Simulation duration
-sim_startdate<-as.Date("2002-01-01")
+sim_startdate<-as.Date("1990-01-01")
 sim_enddate  <-as.Date("2023-12-31")
 days_vec<-seq(sim_startdate,sim_enddate,"day")
 
@@ -245,6 +245,19 @@ GI.prop <-agg_strain[3]
 GII.prop <-agg_strain[4]
 
 
+
+# IID2 genotype by age distributions
+
+
+iid2_gen_age<- read.csv(here("data","IID2genotype_by_age.csv"), header=TRUE)#, sep=,)
+head(iid2_gen_age)
+
+GI3.props<- iid2_gen_age$prop[1:4]
+GI.props<- iid2_gen_age$prop[5:8]
+GII4.props<- iid2_gen_age$prop[9:12]
+GII.props<- iid2_gen_age$prop[13:16]
+
+
 ## time of rest of simulation
 alldays<-1:length(days_vec)
 datadays<-c(iid2_time,total_cases$day,day_sero)
@@ -260,10 +273,26 @@ d <- data.frame(
   cases_a4 = c(round(data_iid2.c4$per1000personyears[4]),rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
   cases_a5 = c(round(data_iid2.c4$per1000personyears[5]),rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
   reported = c(NA,total_cases$cases,NA,rep(NA,length(otherdays))),
-  gi3_prop = c(NA,rep(NA,nrow(total_cases)-1),GI3.prop,NA,rep(NA,length(otherdays))),
-  gi_prop  = c(NA,rep(NA,nrow(total_cases)-1),GI.prop,NA,rep(NA,length(otherdays))),
-  gii4_prop= c(NA,rep(NA,nrow(total_cases)-1),GII4.prop,NA,rep(NA,length(otherdays))),
-  gii_prop = c(NA,rep(NA,nrow(total_cases)-1),GII.prop,NA,rep(NA,length(otherdays))),
+  gi3_prop_1= c(GI3.props[1],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gi3_prop_2= c(GI3.props[2],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gi3_prop_3= c(GI3.props[3],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gi3_prop_4= c(GI3.props[4],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gi_prop_1= c(GI.props[1],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gi_prop_2= c(GI.props[2],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gi_prop_3= c(GI.props[3],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gi_prop_4= c(GI.props[4],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gii4_prop_1= c(GII4.props[1],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gii4_prop_2= c(GII4.props[2],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gii4_prop_3= c(GII4.props[3],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gii4_prop_4= c(GII4.props[4],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gii_prop_1= c(GII.props[1],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gii_prop_2= c(GII.props[2],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gii_prop_3= c(GII.props[3],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  gii_prop_4= c(GII.props[4],rep(NA,nrow(total_cases)),NA,rep(NA,length(otherdays))),
+  # gi3_prop = c(NA,rep(NA,nrow(total_cases)-1),GI3.prop,NA,rep(NA,length(otherdays))),
+  # gi_prop  = c(NA,rep(NA,nrow(total_cases)-1),GI.prop,NA,rep(NA,length(otherdays))),
+  # gii4_prop= c(NA,rep(NA,nrow(total_cases)-1),GII4.prop,NA,rep(NA,length(otherdays))),
+  # gii_prop = c(NA,rep(NA,nrow(total_cases)-1),GII.prop,NA,rep(NA,length(otherdays))),
   a0_prop  = c(NA,rep(NA,nrow(total_cases)-1),a0.prop,NA,rep(NA,length(otherdays))),
   a5_prop  = c(NA,rep(NA,nrow(total_cases)-1),a5.prop,NA,rep(NA,length(otherdays))),
   a15_prop = c(NA,rep(NA,nrow(total_cases)-1),a15.prop,NA,rep(NA,length(otherdays))),
@@ -316,6 +345,7 @@ rm(fulldata_iid2,
    sgss_str,
    sgss_str_wide,
    strains,
+   iid2_gen_age,
    #   data_iid2.c4,
    #   sgss,
    #   sero,

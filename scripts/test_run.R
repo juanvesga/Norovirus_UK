@@ -12,32 +12,68 @@ library(ggmatplot)
 library(profvis)
 library(lubridate)
 
-#################################
-# 1 Source scripts
+# Set outputs path
+
+output_dir<- paste(here(),"_output", sep="")
+
+
+# Set model scenario ------------------------------------------------------
+#scenarios<- c("imm1par","imm2par","imm4par","immdrop","immdrop_noreinfection","imm2par_noreinfection")
+#scenarios<-"imm1par"
+scenarios<-"imm2par"
+#scenarios<-"imm4par"
+#scenarios<- "imm2par_noreinfection"
+#scenarios<-"immdrop"
+#scenarios<-"immdrop_noreinfection"
+#scenarios<-"full"
+
+
+# MCMC parameters 
+nsamples<-5 # from the posterior
+n_steps  <- 100000
+n_out <- 5000
+start_previous<-TRUE
+burnin_prop<-0.5
+chain_selection<-c(1,2,3,4)
+
+
+scenario<-scenarios
+
+# Source general files ------------------------------------------------------------
 source(here("src","utility_functions.R"))
 source(here("scripts","load_data.R"))
 source(here("src","model_functions.R"))
-source(here("src","make_transform_imm1par.R"))
-source(here("scripts","setup.model.R"))
-source(here("src","plot_single_fits.R"))
+source(here("src","run_simulations.R"))
 
 
+if(scenario == "imm4par"){
+  
+  source(here("src","make_transform_imm4par.R"))
+  source(here("scripts","setup.model_imm4par.R"))
+  
+  
+}else {
+  
+  source(here("src","make_transform_imm1par.R"))
+  source(here("scripts","setup.model.R"))
+  
+  
+}
 
-stochastic <- 0
 
-#############
-# 2 Create dust object 
-#model_path<-here("src","seiar.age.2strain_alternative.R")
-#model_path<-here("src","seiar.age.imm2par_noreinfection.R")
-model_path<-here("src","seiar.age.immdrop_noreinfection.R")
+# Create model objects ----------------------------------------------------
+
+
+model_path<-here("src",paste0("seiar.age.",scenario,".R"))
 seiar <- odin.dust::odin_dust(model_path)
 
-#############
-# 3 Create filter
+#seiar_odin<-odin::odin(model_path)
+
+stochastic <- 0
 if (stochastic==1){
   filter <- mcstate::particle_filter$new(data_all, 
                                          model = seiar, 
-                                         n_particles = 10,
+                                         n_particles = 11,
                                          compare = compare, 
                                          index = index)
 }else{
@@ -55,87 +91,93 @@ if (stochastic==1){
 }
 
 
-fac<-1.5
-  
+
+
+# Select params ---------------------------------------------
+
 
 theta=c(
-    beta_1 =0.20901773*fac,    
-    beta_2 =   0.22070250*fac ,
-    beta_3 =   0.75916798*fac,   
-    beta_4 =  0.46708090*fac,
-    aduRR =      0.08377272,
-    maternalAB =   81.59086447,  
-    imm_yr = 19.61791224  ,
-    imm_fac =  2.11062235,
-    w1_1 =    0.31567480 ,
-    repfac_0=159.98810378 ,   
-    repfac_5= 510, 
-    repfac_15=480, 
-    repfac_65p= 40, 
-    crossp_12=0.04876855,   
-    crossp_21=0.05012397,    
-    crossp_34=0.05404153,     
-    crossp_43=0.05126302)  
+  beta_1 =    0.06851356    ,
+  beta_2 =    0.09719441   ,
+  beta_3 =    0.18645514   ,
+  beta_4 =     0.17864687 ,  
+  aduRR =     0.08165609 ,
+  maternalAB =   249.33617871,  
+  imm_yr =    66.36624961  ,
+  imm_fac =      11.21213824,
+  repfac_0=   988.61361140,
+  repfac_5=    671.53335348,
+  repfac_15=    46.33865265,
+  repfac_65p=   827.55000544,
+  crossp_GI=      0.06339263,
+  crossp_GII=     0.86121477 )
 
 
-# xvals<-(read.csv( here("output",paste("simplex_set",".csv",sep = ""))))
-# xx<-xvals$x/unlist(params$scaling_fac)
-# theta<-xx
 
-pars<-list(
-  beta_1  = theta[['beta_1']],   # transm coefficient
-  beta_2  = theta[['beta_2']],   # transm coefficient
-  beta_3  = theta[['beta_3']],   # transm coefficient
-  beta_4  = theta[['beta_4']],   # transm coefficient
-  maternalAB  = theta[['maternalAB']],   
-  imm_yr = theta[['imm_yr']],
-  imm_fac = theta[['imm_fac']],
-  w1_1 = theta[['w1_1']],
-  repfac_0=theta[['repfac_0']],
-  repfac_5=theta[['repfac_5']],
-  repfac_15=theta[['repfac_15']],
-  repfac_65p=theta[['repfac_65p']],
-  aduRR=theta[["aduRR"]],
-  crossp_12=theta[['crossp_12']],
-  crossp_21=theta[['crossp_21']],
-  crossp_34=theta[['crossp_34']],
-  crossp_43=theta[['crossp_43']],
-  pop  = pop,
-  init  = init,
-  mu    = params$mu,
-  m=params$transmission,
-  m_holi=params$transmission_holi,
-  cmx_1=params$cmx_1,
-  cmx_2=params$cmx_2,
-  cmx_3=params$cmx_3,
-  cmx_4=params$cmx_4,
-  cmx_5=params$cmx_5,
-  cmx_6=params$cmx_6,
-  cmx_7=params$cmx_7,
-  cmx_8=params$cmx_8,
-  cmx_9=params$cmx_9,
-  aging_vec =params$aging_vec,
-  school_step= as.double(params$school_uk),
-  n_school_steps=params$n_school_steps,
-  covid_step= as.double(params$covid_sche),
-  n_covid_steps=params$n_covid_steps,
-  N_age = params$N_age,
-  vac_camp_cov=params$vac_camp_cov,
-  vac_sche_cov=params$vac_sche_cov,
-  dt=1
-) # number of age groups
+# Run sims ----------------------------------------------------------------
+load(paste0(output_dir,"/chains_",scenario,".RData"))
+id<-which(processed_chains$chain ==chain_selection)
+par<-processed_chains$pars[id,]
+M <- par[sample(nrow(par), nsamples), ]
 
 
-#pars2<-mapply(c, pars, pars, SIMPLIFY=FALSE)
+# Change a parameter
+
+theta=c(
+   # beta_1 =    0.06851356    ,
+   # beta_2 =    0.09719441   ,
+   # beta_3 =    0.1   ,
+   # beta_4 =    0.17864687 ,  
+   aduRR =     0.258165609 ,
+  #maternalAB =   249.33617871,  
+  #imm_yr =    66.36624961  ,
+  #imm_fac =      11.21213824,
+  #repfac_0=   988.61361140,
+  #repfac_5=    671.53335348,
+  #repfac_15=    46.33865265,
+  #repfac_65p=   827.55000544,
+  #crossp_GI=      0.06339263,
+  #crossp_GII=     0.86121477
+  )
+
+scaling_fac<-unlist(params$scaling_fac)
+
+id<-which(names(scaling_fac)%in%names(theta))
+
+M[,id]<-scale_theta<-theta*scaling_fac[id]
 
 
-## Run Filter
+# M<-matrix(rep(scale_theta,nsamples),nrow =nsamples)
+# colnames(M)<-paste(names(theta))
+
+
+out<-run_simulations(nsamples,M,filter2,footransform)
+
+
+source(here("scripts","plot_model_fits.R"))
+
+
 # 
-filter2$run(pars, save_history = TRUE)
-sims<-filter2$history()
-data<-data_all
-plot_single_fits(sims,data)
+# 
+# save(out,file=paste0(output_dir,"/runs_mcmc_",scenario,".Rdata"))
+# 
+# 
+# rm(processed_chains)
+# rm(out)
 
+time<-seq(1,365*2)
+
+season<-(1 + theta[['w1_1']]*cos((2*pi*time)/364 + (params$w2/12)*pi))
+
+# w1<- 0.8
+# w2<- -2
+# season<-(1 + w1*cos((2*pi*time)/364 + (w2/12)*pi))
+# plot(time,season,'l',xlim = c(182,182*3))
+# lines(c(365+32,365+32),c(0,1.6))
+# 
+# 1-min(season)/max(season)
+
+browser()
 
 
 #### Other simulations(Stochastic)
@@ -170,7 +212,7 @@ inci<-sim[idx$new_cases_week,1,]
 plot(days_vec,inci, type = "l",
      xlim = c(as.Date("2012-01-01"),as.Date("2023-01-01")),
      ylim = c(0,500000)
-     )
+)
 
 
 
@@ -237,8 +279,8 @@ lines(days_vec,cases_week,col="firebrick")
 prev<-sim[idx$seroprev_num[2:7],1,]/sim[idx$seroprev_den[2:7],1,]
 t<-sim[idx$time,1,]
 plot(t,prev[1,], type = "l", col = "blue",  
-        xlab = "day", ylab = "prevalence", las = 1,
-        ylim=c(0,1))
+     xlab = "day", ylab = "prevalence", las = 1,
+     ylim=c(0,1))
 lines(t,prev[2,], col = "red")
 lines(t,prev[3,], col = "orange")
 lines(t,prev[4,], col = "green")
@@ -273,7 +315,7 @@ idx<-model$info()$index
 cases<-(sim[idx$infections_day_gii,,])
 t<-sim[idx$time,1,]
 plot(t,cases[1,1,], type = "l", col = cols[1],  
-        xlab = "day", ylab = "incidence", las = 1,ylim = c(0,250000))
+     xlab = "day", ylab = "incidence", las = 1,ylim = c(0,250000))
 lines(t,cases[2,1,], type = "l", col = cols[2])
 lines(t,cases[3,1,], type = "l", col = cols[3])
 lines(t,cases[4,1,], type = "l", col = cols[4])
@@ -282,25 +324,25 @@ lines(t,cases[4,1,], type = "l", col = cols[4])
 idx<-model$info()$index
 cases<- cbind(
   (sim[idx$inc_year_gi3[1],1,]+
-          sim[idx$inc_year_gi[1],1,]+
-          sim[idx$inc_year_gii4[1],1,]+
-          sim[idx$inc_year_gii[1],1,])/sim[idx$pop_by4age[1],1,] ,
-(sim[idx$inc_year_gi3[2],1,]+
-  sim[idx$inc_year_gi[2],1,]+
-  sim[idx$inc_year_gii4[2],1,]+
-  sim[idx$inc_year_gii[2],1,])/sim[idx$pop_by4age[2],1,],
-(sim[idx$inc_year_gi3[3],1,]+
-  sim[idx$inc_year_gi[3],1,]+
-  sim[idx$inc_year_gii4[3],1,]+
-  sim[idx$inc_year_gii[3],1,])/sim[idx$pop_by4age[3],1,],
-(sim[idx$inc_year_gi3[4],1,]+
-  sim[idx$inc_year_gi[4],1,]+
-  sim[idx$inc_year_gii4[4],1,]+
-  sim[idx$inc_year_gii[4],1,])/sim[idx$pop_by4age[4],1,],
-(sim[idx$inc_year_gi3[5],1,]+
-  sim[idx$inc_year_gi[5],1,]+
-  sim[idx$inc_year_gii4[5],1,]+
-  sim[idx$inc_year_gii[5],1,])/sim[idx$pop_by4age[5],1,])
+     sim[idx$inc_year_gi[1],1,]+
+     sim[idx$inc_year_gii4[1],1,]+
+     sim[idx$inc_year_gii[1],1,])/sim[idx$pop_by4age[1],1,] ,
+  (sim[idx$inc_year_gi3[2],1,]+
+     sim[idx$inc_year_gi[2],1,]+
+     sim[idx$inc_year_gii4[2],1,]+
+     sim[idx$inc_year_gii[2],1,])/sim[idx$pop_by4age[2],1,],
+  (sim[idx$inc_year_gi3[3],1,]+
+     sim[idx$inc_year_gi[3],1,]+
+     sim[idx$inc_year_gii4[3],1,]+
+     sim[idx$inc_year_gii[3],1,])/sim[idx$pop_by4age[3],1,],
+  (sim[idx$inc_year_gi3[4],1,]+
+     sim[idx$inc_year_gi[4],1,]+
+     sim[idx$inc_year_gii4[4],1,]+
+     sim[idx$inc_year_gii[4],1,])/sim[idx$pop_by4age[4],1,],
+  (sim[idx$inc_year_gi3[5],1,]+
+     sim[idx$inc_year_gi[5],1,]+
+     sim[idx$inc_year_gii4[5],1,]+
+     sim[idx$inc_year_gii[5],1,])/sim[idx$pop_by4age[5],1,])
 
 
 cases<-t(cases*1000)  

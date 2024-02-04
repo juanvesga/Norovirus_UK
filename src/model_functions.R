@@ -43,146 +43,224 @@ compare <- function(state, observed, pars = NULL) {
   ) 
   llk_irate<-colSums(dpois(x = observations_irate, lambda = modelled_irate, log = TRUE),na.rm=TRUE)
   
-  # Strain prevalence GI.3 in SGSS
-  modelled_gi3<-rbind(
-    ((state['cumm_incday_gi3_1',]+
-        state['cumm_incday_gi3_2',]+
-        state['cumm_incday_gi3_3',]+
-        state['cumm_incday_gi3_4',]) /
-       
-       (    state['cumm_incday_gii4_1',]+
-            state['cumm_incday_gii4_2',]+
-            state['cumm_incday_gii4_3',]+
-            state['cumm_incday_gii4_4',]+
-            state['cumm_incday_gii_1',]+
-            state['cumm_incday_gii_2',]+
-            state['cumm_incday_gii_3',]+
-            state['cumm_incday_gii_4',]+
-            state['cumm_incday_gi3_1',]+
-            state['cumm_incday_gi3_2',]+
-            state['cumm_incday_gi3_3',]+
-            state['cumm_incday_gi3_4',]+
-            state['cumm_incday_gi_1',]+
-            state['cumm_incday_gi_2',]+
-            state['cumm_incday_gi_3',]+
-            state['cumm_incday_gi_4',])
-     ) + noise)
   
+  # Strain distribution by Age in IID2 incidence - Harris
   
-  observed_event<-164
+  denom_1<-(state['inc_year_gi3_1',]+
+              state['inc_year_gi_1',]+
+              state['inc_year_gii4_1',]+
+              state['inc_year_gii_1',])+
+    (state['inc_year_gi3_2',]+
+       state['inc_year_gi_2',]+
+       state['inc_year_gii4_2',]+
+       state['inc_year_gii_2',])
   
-  observed_size<-2710
+  denom_2<-(state['inc_year_gi3_3',]+
+              state['inc_year_gi_3',]+
+              state['inc_year_gii4_3',]+
+              state['inc_year_gii_3',])
   
+  denom_3<-(state['inc_year_gi3_4',]+
+              state['inc_year_gi_4',]+
+              state['inc_year_gii4_4',]+
+              state['inc_year_gii_4',])
   
-  llk_gi3<-dbinom(x=round( observed$gi3_prop*observed_size),
-                  size = observed_size,
-                  prob =  modelled_gi3,
-                  log = TRUE)
+  denom_4<-(state['inc_year_gi3_5',]+
+              state['inc_year_gi_5',]+
+              state['inc_year_gii4_5',]+
+              state['inc_year_gii_5',])
+    
+  modelled_gi3_1 <- ((state['inc_year_gi3_1',]+ state['inc_year_gi3_2',])/denom_1) +noise
+  modelled_gi_1  <- ((state['inc_year_gi_1',]+ state['inc_year_gi_2',])/denom_1) +noise
+  modelled_gii4_1<- ((state['inc_year_gii4_1',]+ state['inc_year_gii4_2',])/denom_1) +noise
+  modelled_gii_1 <- ((state['inc_year_gii_1',]+ state['inc_year_gii_2',])/denom_1) +noise
   
+  modelled_gi3_2 <- ((state['inc_year_gi3_3',])/denom_2) +noise
+  modelled_gi_2  <- ((state['inc_year_gi_3',])/denom_2) +noise
+  modelled_gii4_2<- ((state['inc_year_gii4_3',])/denom_2) +noise
+  modelled_gii_2 <- ((state['inc_year_gii_3',])/denom_2) +noise
   
+  modelled_gi3_3 <- ((state['inc_year_gi3_4',])/denom_3) +noise
+  modelled_gi_3  <- ((state['inc_year_gi_4',])/denom_3) +noise
+  modelled_gii4_3<- ((state['inc_year_gii4_4',])/denom_3) +noise
+  modelled_gii_3 <- ((state['inc_year_gii_4',])/denom_3) +noise
   
-  # Strain prevalence GI inSGSS
-  modelled_gi<-rbind(
-    ((  state['cumm_incday_gi_1',]+
-          state['cumm_incday_gi_2',]+
-          state['cumm_incday_gi_3',]+
-          state['cumm_incday_gi_4',]) /
-       (    
-            state['cumm_incday_gii4_1',]+
-            state['cumm_incday_gii4_2',]+
-            state['cumm_incday_gii4_3',]+
-            state['cumm_incday_gii4_4',]+
-            state['cumm_incday_gii_1',]+
-            state['cumm_incday_gii_2',]+
-            state['cumm_incday_gii_3',]+
-            state['cumm_incday_gii_4',]+
-            state['cumm_incday_gi3_1',]+
-            state['cumm_incday_gi3_2',]+
-            state['cumm_incday_gi3_3',]+
-            state['cumm_incday_gi3_4',]+
-            state['cumm_incday_gi_1',]+
-            state['cumm_incday_gi_2',]+
-            state['cumm_incday_gi_3',]+
-            state['cumm_incday_gi_4',])) + noise)
+  modelled_gi3_4 <- ((state['inc_year_gi3_5',])/denom_4) +noise
+  modelled_gi_4  <- ((state['inc_year_gi_5',])/denom_4) +noise
+  modelled_gii4_4<- ((state['inc_year_gii4_5',])/denom_4) +noise
+  modelled_gii_4 <- ((state['inc_year_gii_5',])/denom_4) +noise
   
-  observed_event<-210
+  observed_size_1<-68
+  observed_size_2<-41
+  observed_size_3<-153
+  observed_size_4<-48
   
-  observed_size<-2710
+  llk_gi3_1 <-dbinom(x=round(observed$gi3_prop_1*observed_size_1), size = observed_size_1, prob = modelled_gi3_1, log = TRUE )
+  llk_gi_1  <-dbinom(x=round(observed$gi_prop_1*observed_size_1),  size = observed_size_1, prob = modelled_gi_1, log = TRUE )
+  llk_gii4_1<-dbinom(x=round(observed$gii4_prop_1*observed_size_1),size = observed_size_1, prob = modelled_gii4_1, log = TRUE )
+  llk_gii_1 <-dbinom(x=round(observed$gii_prop_1*observed_size_1), size = observed_size_1, prob = modelled_gii_1, log = TRUE )
+
+  llk_gi3_2 <-dbinom(x=round(observed$gi3_prop_2*observed_size_2), size = observed_size_2, prob = modelled_gi3_2, log = TRUE )
+  llk_gi_2  <-dbinom(x=round(observed$gi_prop_2*observed_size_2),  size = observed_size_2, prob = modelled_gi_2, log = TRUE )
+  llk_gii4_2<-dbinom(x=round(observed$gii4_prop_2*observed_size_2),size = observed_size_2, prob = modelled_gii4_2, log = TRUE )
+  llk_gii_2 <-dbinom(x=round(observed$gii_prop_2*observed_size_2), size = observed_size_2, prob = modelled_gii_2, log = TRUE )
+
+  llk_gi3_3 <-dbinom(x=round(observed$gi3_prop_3*observed_size_3), size = observed_size_3, prob = modelled_gi3_3, log = TRUE )
+  llk_gi_3  <-dbinom(x=round(observed$gi_prop_3*observed_size_3),  size = observed_size_3, prob = modelled_gi_3, log = TRUE )
+  llk_gii4_3<-dbinom(x=round(observed$gii4_prop_3*observed_size_3),size = observed_size_3, prob = modelled_gii4_3, log = TRUE )
+  llk_gii_3 <-dbinom(x=round(observed$gii_prop_3*observed_size_3), size = observed_size_3, prob = modelled_gii_3, log = TRUE )
+
+  llk_gi3_4 <-dbinom(x=round(observed$gi3_prop_4*observed_size_4), size = observed_size_4, prob = modelled_gi3_4, log = TRUE )
+  llk_gi_4  <-dbinom(x=round(observed$gi_prop_4*observed_size_4),  size = observed_size_4, prob = modelled_gi_4, log = TRUE )
+  llk_gii4_4<-dbinom(x=round(observed$gii4_prop_4*observed_size_4),size = observed_size_4, prob = modelled_gii4_4, log = TRUE )
+  llk_gii_4 <-dbinom(x=round(observed$gii_prop_4*observed_size_4), size = observed_size_4, prob = modelled_gii_4, log = TRUE )
   
-  llk_gi<-dbinom(x=round( observed$gi_prop*observed_size),
-                 size = observed_size,
-                 prob =  modelled_gi,
-                 log = TRUE)
-  
-  
-  # Strain prevalence GII.4 in SGSS
-  modelled_gii4<-rbind(
-    ((state['cumm_incday_gii4_1',]+
-        state['cumm_incday_gii4_2',]+
-        state['cumm_incday_gii4_3',]+
-        state['cumm_incday_gii4_4',]) /
-       (  
-            state['cumm_incday_gii4_1',]+
-            state['cumm_incday_gii4_2',]+
-            state['cumm_incday_gii4_3',]+
-            state['cumm_incday_gii4_4',]+
-            state['cumm_incday_gii_1',]+
-            state['cumm_incday_gii_2',]+
-            state['cumm_incday_gii_3',]+
-            state['cumm_incday_gii_4',]+
-            state['cumm_incday_gi3_1',]+
-            state['cumm_incday_gi3_2',]+
-            state['cumm_incday_gi3_3',]+
-            state['cumm_incday_gi3_4',]+
-            state['cumm_incday_gi_1',]+
-            state['cumm_incday_gi_2',]+
-            state['cumm_incday_gi_3',]+
-            state['cumm_incday_gi_4',])) + noise)
-  
-  
-  observed_event<-1532
-  
-  observed_size<-2710
-  
-  llk_gii4<-dbinom(x=round( observed$gii4_prop*observed_size),
-                 size = observed_size,
-                 prob =  modelled_gii4,
-                 log = TRUE)
-  
-  
-  # Strain prevalence GII SGSS
-  modelled_gii<-rbind(
-    ((state['cumm_incday_gii_1',]+
-        state['cumm_incday_gii_2',]+
-        state['cumm_incday_gii_3',]+
-        state['cumm_incday_gii_4',]) /
-       (   
-              state['cumm_incday_gii4_1',]+
-              state['cumm_incday_gii4_2',]+
-              state['cumm_incday_gii4_3',]+
-              state['cumm_incday_gii4_4',]+
-              state['cumm_incday_gii_1',]+
-              state['cumm_incday_gii_2',]+
-              state['cumm_incday_gii_3',]+
-              state['cumm_incday_gii_4',]+
-              state['cumm_incday_gi3_1',]+
-              state['cumm_incday_gi3_2',]+
-              state['cumm_incday_gi3_3',]+
-              state['cumm_incday_gi3_4',]+
-              state['cumm_incday_gi_1',]+
-              state['cumm_incday_gi_2',]+
-              state['cumm_incday_gi_3',]+
-              state['cumm_incday_gi_4',])) + noise)
-  
-  
-  observed_event<-210
-  
-  observed_size<-2710
-  
-  llk_gii<-dbinom(x=round( observed$gii_prop*observed_size),
-                   size = observed_size,
-                   prob =  modelled_gii,
-                   log = TRUE)
+
+  llk_genotype_byage<-sum(c(llk_gi3_1, llk_gi3_2, llk_gi3_3, llk_gi3_4,
+                            llk_gi_1,  llk_gi_2,  llk_gi_3,  llk_gi_4,
+                            llk_gii4_1,llk_gii4_2,llk_gii4_3,llk_gii4_4,
+                            llk_gii_1, llk_gii_2, llk_gii_3, llk_gii_4), na.rm = TRUE)
+
+  # # Strain prevalence GI.3 in SGSS
+  # modelled_gi3<-rbind(
+  #   ((state['cumm_incday_gi3_1',]+
+  #       state['cumm_incday_gi3_2',]+
+  #       state['cumm_incday_gi3_3',]+
+  #       state['cumm_incday_gi3_4',]) /
+  #      
+  #      (    state['cumm_incday_gii4_1',]+
+  #           state['cumm_incday_gii4_2',]+
+  #           state['cumm_incday_gii4_3',]+
+  #           state['cumm_incday_gii4_4',]+
+  #           state['cumm_incday_gii_1',]+
+  #           state['cumm_incday_gii_2',]+
+  #           state['cumm_incday_gii_3',]+
+  #           state['cumm_incday_gii_4',]+
+  #           state['cumm_incday_gi3_1',]+
+  #           state['cumm_incday_gi3_2',]+
+  #           state['cumm_incday_gi3_3',]+
+  #           state['cumm_incday_gi3_4',]+
+  #           state['cumm_incday_gi_1',]+
+  #           state['cumm_incday_gi_2',]+
+  #           state['cumm_incday_gi_3',]+
+  #           state['cumm_incday_gi_4',])
+  #    ) + noise)
+  # 
+  # 
+  # observed_event<-164
+  # 
+  # observed_size<-2710
+  # 
+  # 
+  # llk_gi3<-dbinom(x=round( observed$gi3_prop*observed_size),
+  #                 size = observed_size,
+  #                 prob =  modelled_gi3,
+  #                 log = TRUE)
+  # 
+  # 
+  # 
+  # # Strain prevalence GI inSGSS
+  # modelled_gi<-rbind(
+  #   ((  state['cumm_incday_gi_1',]+
+  #         state['cumm_incday_gi_2',]+
+  #         state['cumm_incday_gi_3',]+
+  #         state['cumm_incday_gi_4',]) /
+  #      (    
+  #           state['cumm_incday_gii4_1',]+
+  #           state['cumm_incday_gii4_2',]+
+  #           state['cumm_incday_gii4_3',]+
+  #           state['cumm_incday_gii4_4',]+
+  #           state['cumm_incday_gii_1',]+
+  #           state['cumm_incday_gii_2',]+
+  #           state['cumm_incday_gii_3',]+
+  #           state['cumm_incday_gii_4',]+
+  #           state['cumm_incday_gi3_1',]+
+  #           state['cumm_incday_gi3_2',]+
+  #           state['cumm_incday_gi3_3',]+
+  #           state['cumm_incday_gi3_4',]+
+  #           state['cumm_incday_gi_1',]+
+  #           state['cumm_incday_gi_2',]+
+  #           state['cumm_incday_gi_3',]+
+  #           state['cumm_incday_gi_4',])) + noise)
+  # 
+  # observed_event<-210
+  # 
+  # observed_size<-2710
+  # 
+  # llk_gi<-dbinom(x=round( observed$gi_prop*observed_size),
+  #                size = observed_size,
+  #                prob =  modelled_gi,
+  #                log = TRUE)
+  # 
+  # 
+  # # Strain prevalence GII.4 in SGSS
+  # modelled_gii4<-rbind(
+  #   ((state['cumm_incday_gii4_1',]+
+  #       state['cumm_incday_gii4_2',]+
+  #       state['cumm_incday_gii4_3',]+
+  #       state['cumm_incday_gii4_4',]) /
+  #      (  
+  #           state['cumm_incday_gii4_1',]+
+  #           state['cumm_incday_gii4_2',]+
+  #           state['cumm_incday_gii4_3',]+
+  #           state['cumm_incday_gii4_4',]+
+  #           state['cumm_incday_gii_1',]+
+  #           state['cumm_incday_gii_2',]+
+  #           state['cumm_incday_gii_3',]+
+  #           state['cumm_incday_gii_4',]+
+  #           state['cumm_incday_gi3_1',]+
+  #           state['cumm_incday_gi3_2',]+
+  #           state['cumm_incday_gi3_3',]+
+  #           state['cumm_incday_gi3_4',]+
+  #           state['cumm_incday_gi_1',]+
+  #           state['cumm_incday_gi_2',]+
+  #           state['cumm_incday_gi_3',]+
+  #           state['cumm_incday_gi_4',])) + noise)
+  # 
+  # 
+  # observed_event<-1532
+  # 
+  # observed_size<-2710
+  # 
+  # llk_gii4<-dbinom(x=round( observed$gii4_prop*observed_size),
+  #                size = observed_size,
+  #                prob =  modelled_gii4,
+  #                log = TRUE)
+  # 
+  # 
+  # # Strain prevalence GII SGSS
+  # modelled_gii<-rbind(
+  #   ((state['cumm_incday_gii_1',]+
+  #       state['cumm_incday_gii_2',]+
+  #       state['cumm_incday_gii_3',]+
+  #       state['cumm_incday_gii_4',]) /
+  #      (   
+  #             state['cumm_incday_gii4_1',]+
+  #             state['cumm_incday_gii4_2',]+
+  #             state['cumm_incday_gii4_3',]+
+  #             state['cumm_incday_gii4_4',]+
+  #             state['cumm_incday_gii_1',]+
+  #             state['cumm_incday_gii_2',]+
+  #             state['cumm_incday_gii_3',]+
+  #             state['cumm_incday_gii_4',]+
+  #             state['cumm_incday_gi3_1',]+
+  #             state['cumm_incday_gi3_2',]+
+  #             state['cumm_incday_gi3_3',]+
+  #             state['cumm_incday_gi3_4',]+
+  #             state['cumm_incday_gi_1',]+
+  #             state['cumm_incday_gi_2',]+
+  #             state['cumm_incday_gi_3',]+
+  #             state['cumm_incday_gi_4',])) + noise)
+  # 
+  # 
+  # observed_event<-210
+  # 
+  # observed_size<-2710
+  # 
+  # llk_gii<-dbinom(x=round( observed$gii_prop*observed_size),
+  #                  size = observed_size,
+  #                  prob =  modelled_gii,
+  #                  log = TRUE)
   
   
   
@@ -381,19 +459,21 @@ compare <- function(state, observed, pars = NULL) {
   
   
   posterior<-colSums(rbind(llk_irate,
-                           llk_gi3,
-                           llk_gi,
-                           llk_gii4,
-                           llk_gii,  
-                           # llk_reported_04,
-                           # llk_reported_05,
-                           # llk_reported_15,
-                           # llk_reported_65,
-                           #llk_reported,
+                           # llk_gi3,
+                           # llk_gi,
+                           # llk_gii4,
+                           # llk_gii, 
+                           llk_genotype_byage,
+                           llk_reported_04,
+                           llk_reported_05,
+                           llk_reported_15,
+                           llk_reported_65,
+                           llk_reported,
                            llk_sero
   ),na.rm=T)
 
- # print(posterior)
+  # print(posterior)
+ 
   return(posterior)
   
 }

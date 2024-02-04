@@ -1,7 +1,7 @@
 library(matrixStats)
 # Load runs
-load(here("output",paste0("runs_mcmc_",scenario,".RData"))) 
-load(here("output",paste0("chains_",scenario,".RData"))) 
+load(here(paste0(output_dir,"/runs_mcmc_",scenario,".RData"))) 
+load(here(paste0(output_dir,"/chains_",scenario,".RData"))) 
 
 
 
