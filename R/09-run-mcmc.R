@@ -155,9 +155,73 @@ bayesplot::mcmc_acf(samples_array)
 
 
 
+
+# Update covariance matrix ------------------------------------------------
+
+
+vcv <-cov(samples$pars)
+
+
+# Create pmcmc parameters
+mcmc_pars <- mcstate::pmcmc_parameters$new(prior, vcv, transform = footransform)
+
+
+samples <- mcstate::pmcmc(mcmc_pars, filter, control = control)
+
+
+chain1<-which(samples$chain==1)
+chain2<-which(samples$chain==2)
+chain3<-which(samples$chain==3)
+
+samples_df1 <- posterior::as_draws_df(exp(samples$pars[chain1,]))
+samples_df2 <- posterior::as_draws_df(exp(samples$pars[chain2,]))
+samples_df3 <- posterior::as_draws_df(exp(samples$pars[chain3,]))
+
+
+samples_array  <- posterior::bind_draws(
+  samples_df1, 
+  samples_df2,
+  samples_df3,
+  along = "chain")
+
+print(samples_array)
+samples_df <- posterior::as_draws_array(exp(samples$pars), .nchains=3)
+
+summary<-posterior::summarise_draws(samples_df)
+
+
+matplot(samples$probabilities[, "log_posterior"] , type = "l", lty = 1,
+        xlab = "Sample", ylab = "Log posterior probability density")
+
+
+
+
+plot(samples$probabilities[chain1, "log_posterior"],
+     type="l",xlab = "iteration",ylab = "log-Posterior", col="grey")
+lines(samples$probabilities[chain2, "log_posterior"], col="firebrick")
+lines(samples$probabilities[chain3, "log_posterior"], col="navy")
+
+
+
+root<-here::here()
+
+bayesplot::mcmc_trace(samples_array)
+
+
+bayesplot::mcmc_dens_overlay(samples_array)
+
+bayesplot::mcmc_hist(samples_array)
+
+bayesplot::mcmc_violin(samples_array)
+
+bayesplot::mcmc_intervals(samples_array)
+
+bayesplot::mcmc_acf(samples_array)
+
+
+
+
 qs_save(samples, outfile)
 qs_save(index,outfile_index)
-
-
 
 
