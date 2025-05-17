@@ -1,9 +1,11 @@
 ## **The transmission dynamics of Norovirus in England: a genotype-specific modelling study**
 
-![Transmission model schematic](data/raw/FIGURE 2.png)
 
-[Repository structure and instructions]{.underline}
+![FIGURE 2](https://github.com/user-attachments/assets/7c2e6c23-8e0d-405b-9237-b1d7119564da)
+Transmission model schematic
 
+**Repository structure and instructions
+**
 -   data folder: contains raw which hosts necessary raw data for calibration and input. Stores intermediate objects from "data" type scripts in "R" folder
 
 -   models folder: contains Odin code of the model and model function for calculating likelihood function
