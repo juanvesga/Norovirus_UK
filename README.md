@@ -1,6 +1,6 @@
 ## **The transmission dynamics of Norovirus in England: a genotype-specific modelling study**
 
-![Transmission model schematic for Norovirus](images/FIGURE 2-01.png)
+![Transmission model schematic](data/raw/FIGURE 2.png)
 
 [Repository structure and instructions]{.underline}
 
