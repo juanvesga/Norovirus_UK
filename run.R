@@ -7,9 +7,9 @@ required <- c(
   "readxl",
   "data.table",
   "gridExtra",
-  "odin",
-  "dust",
-  "mcstate",  
+  "odin2",
+  "dust2",
+  "monty",  
   "tools",
   "matrixStats",
   "lubridate",
@@ -36,13 +36,13 @@ if (length(not_installed)) {
     c(
       "01-parameters.R",
       "02-data-calibration.R",
-      "03-data-polymod.R",
+      "03-data-polymod-short.R",
       "04-data-school-uk.R",
-      "05-data-comix.R",
+      "05-data-comix-short.R",
       "06-data-covid.R",
-      "07-generate-input-parameters.R",
-      "08-generate-priors.R",
-      "09-run-mcmc.R"
+      "07-generate-input-parameters-short.R",
+      "08-generate-priors.R"
+
     )
   )
   

@@ -4,10 +4,10 @@
 # -------------------------------------------------------------------------
 
 root    <- here::here()
-infile0  <- file.path(root,"output", "parameters.qs2")
+infile0  <- file.path(root,"output", "parameters_short.qs2")
 infile  <- file.path(root, "data", "raw", "contact_matrices_9_periods.csv")
-infile2  <- file.path(root, "output", "polymod.qs2")
-outfile <- file.path(root, "output", "comix.qs2")
+infile2  <- file.path(root, "output", "polymod_short.qs2")
+outfile <- file.path(root, "output", "comix_short.qs2")
 
 # Packages
 source(file.path(root, "R", "modify_attach.R"))
@@ -78,15 +78,15 @@ for (ii in 1:length(parameters$ages)){
 pop<-parameters$pop
 
 comix<-list(
-cmx_1=symm_mat(cmx_1)/rep(pop, each = ncol(conmat$transmission)),
-cmx_2=symm_mat(cmx_2)/rep(pop, each = ncol(conmat$transmission)),
-cmx_3=symm_mat(cmx_3)/rep(pop, each = ncol(conmat$transmission)),
-cmx_4=symm_mat(cmx_4)/rep(pop, each = ncol(conmat$transmission)),
-cmx_5=symm_mat(cmx_5)/rep(pop, each = ncol(conmat$transmission)),
-cmx_6=symm_mat(cmx_6)/rep(pop, each = ncol(conmat$transmission)),
-cmx_7=symm_mat(cmx_7)/rep(pop, each = ncol(conmat$transmission)),
-cmx_8=symm_mat(cmx_8)/rep(pop, each = ncol(conmat$transmission)),
-cmx_9=symm_mat(cmx_9)/rep(pop, each = ncol(conmat$transmission))
+  cmx_1=symm_mat(cmx_1)/rep(pop, each = ncol(conmat$transmission)),
+  cmx_2=symm_mat(cmx_2)/rep(pop, each = ncol(conmat$transmission)),
+  cmx_3=symm_mat(cmx_3)/rep(pop, each = ncol(conmat$transmission)),
+  cmx_4=symm_mat(cmx_4)/rep(pop, each = ncol(conmat$transmission)),
+  cmx_5=symm_mat(cmx_5)/rep(pop, each = ncol(conmat$transmission)),
+  cmx_6=symm_mat(cmx_6)/rep(pop, each = ncol(conmat$transmission)),
+  cmx_7=symm_mat(cmx_7)/rep(pop, each = ncol(conmat$transmission)),
+  cmx_8=symm_mat(cmx_8)/rep(pop, each = ncol(conmat$transmission)),
+  cmx_9=symm_mat(cmx_9)/rep(pop, each = ncol(conmat$transmission))
 )
 
 

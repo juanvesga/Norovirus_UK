@@ -35,18 +35,7 @@ noro_model <- odin({
     n_ageoS[i] + 
     n_ageiS[i] + 
     n_MS[i] + 
-    sum(n_R_wane[i,])+
-    sum(n_R1_wane[i,])+
-    sum(n_R2_wane[i,])+
-    sum(n_R3_wane[i,])+
-    sum(n_R4_wane[i,])+
-    sum(n_R12_wane[i,])+
-    sum(n_R13_wane[i,])+
-    sum(n_R14_wane[i,])+
-    sum(n_R23_wane[i,])+
-    sum(n_R24_wane[i,])+
-    sum(n_R34_wane[i,])+
-    sum(n_R4rd_wane[i,])-
+    sum(n_R_wane[i,])-
     sum(n_S_E[i,]) -
     n_muS[i] -
     n_Svacc[i]
@@ -92,9 +81,10 @@ noro_model <- odin({
     R[i,j] - 
     n_ageoR[i,j] + 
     n_ageiR[i,j] + 
-    n_A_R[i,j]   - 
+    n_R2nd_R[i,j] +
+    n_A_R[i,j] - 
+     sum(n_R_progress[i,j,]) -
     n_R_wane[i,j]-
-   sum(n_R_progress[i,j,]) -
     n_muR[i,j]-
     n_Rvacc[i,j]
   
@@ -136,6 +126,7 @@ noro_model <- odin({
     R1[i,j]- 
     n_ageoR1[i,j] + # age out
     n_ageiR1[i,j] + # age in
+    n_R3rd_R1[i,j] +
     n_A1_R1[i,j] -  # A to R recovery 
     sum(n_R1_progress[i,j,]) - # Third fresh infection
     n_R1_wane[i,j]-
@@ -186,6 +177,7 @@ noro_model <- odin({
     R2[i,j]- 
     n_ageoR2[i,j] + # age out
     n_ageiR2[i,j] + # age in
+    n_R3rd_R2[i,j] +
     n_A2_R2[i,j] -  # A to R recovery 
     sum(n_R2_progress[i,j,])- # Third fresh infection
     n_R2_wane[i,j]-
@@ -236,6 +228,7 @@ noro_model <- odin({
     R3[i,j]- 
     n_ageoR3[i,j] + # age out
     n_ageiR3[i,j] + # age in
+    n_R3rd_R3[i,j] +
     n_A3_R3[i,j] -  # A to R recovery 
     sum(n_R3_progress[i,j,]) - # Third fresh infection
     n_R3_wane[i,j]-
@@ -285,6 +278,7 @@ noro_model <- odin({
     R4[i,j]- 
     n_ageoR4[i,j] + # age out
     n_ageiR4[i,j] + # age in
+    n_R3rd_R4[i,j] +
     n_A4_R4[i,j] -  # A to R recovery 
     sum(n_R4_progress[i,j,])- # Third fresh infection
     n_R4_wane[i,j]-
@@ -338,6 +332,7 @@ noro_model <- odin({
     R12[i,j]- 
     n_ageoR12[i,j] + # age out
     n_ageiR12[i,j] + # age in
+    n_R4rd_R12[i,j] +
     n_A12_R12[i,j] -  # A to R recovery 
     sum(n_R12_progress[i,j,]) - # fourth fresh infection
     n_R12_wane[i,j]-
@@ -391,6 +386,7 @@ noro_model <- odin({
     R13[i,j]- 
     n_ageoR13[i,j] + # age out
     n_ageiR13[i,j] + # age in
+    n_R4rd_R13[i,j] +
     n_A13_R13[i,j] -  # A to R recovery 
     sum(n_R13_progress[i,j,]) - # fourth fresh infection
     n_R13_wane[i,j]-
@@ -444,6 +440,7 @@ noro_model <- odin({
     R14[i,j]- 
     n_ageoR14[i,j] + # age out
     n_ageiR14[i,j] + # age in
+    n_R4rd_R14[i,j] +
     n_A14_R14[i,j] -  # A to R recovery 
     sum(n_R14_progress[i,j,]) - # fourth fresh infection
     n_R14_wane[i,j]-
@@ -496,6 +493,7 @@ noro_model <- odin({
     R23[i,j]- 
     n_ageoR23[i,j] + # age out
     n_ageiR23[i,j] + # age in
+    n_R4rd_R23[i,j] +
     n_A23_R23[i,j] -  # A to R recovery 
     sum(n_R23_progress[i,j,]) - # fourth fresh infection
     n_R23_wane[i,j]-
@@ -547,6 +545,7 @@ noro_model <- odin({
     R24[i,j]- 
     n_ageoR24[i,j] + # age out
     n_ageiR24[i,j] + # age in
+    n_R4rd_R24[i,j] +
     n_A24_R24[i,j] -  # A to R recovery 
     sum(n_R24_progress[i,j,]) - # fourth fresh infection
     n_R24_wane[i,j]-
@@ -598,6 +597,7 @@ noro_model <- odin({
     R34[i,j]- 
     n_ageoR34[i,j] + # age out
     n_ageiR34[i,j] + # age in
+    n_R4rd_R34[i,j] +
     n_A34_R34[i,j] -  # A to R recovery 
     sum(n_R34_progress[i,j,]) - # fourth fresh infection
     n_R34_wane[i,j]-
@@ -645,7 +645,7 @@ noro_model <- odin({
     n_ageoA4rd[i,j] + # age out
     n_ageiA4rd[i,j] + # age in
     n_I4rd_A4rd[i,j] +  # I to A 
-     n_vacA1234[i,j] +
+    n_vacA1234[i,j] +
     n_R4rd_A4rd[i,j] -  # Asymp re infection
     n_A4rd_R4rd[i,j] -  # Recovery A to R
     n_muA4rd[i,j]     # Back. mortality
@@ -680,7 +680,6 @@ noro_model <- odin({
   
   ####### Outputs
   #########################
-  # Parameters defining your accumulation period
   update(cumulative_cases_strain[]) <- 
     if(i==1)
       (cumulative_cases_strain[i] + reported_day_gi3)
@@ -691,42 +690,22 @@ noro_model <- odin({
   else 
     (cumulative_cases_strain[i] + reported_day_gii) 
   
-  # reported_gi3  ~ Poisson(cumulative_cases_strain[1] + noise)#/52
-  # reported_gi   ~ Poisson(cumulative_cases_strain[2] + noise)#/52
-  # reported_gii4 ~ Poisson(cumulative_cases_strain[3] + noise)#/52
-  # reported_gii  ~ Poisson(cumulative_cases_strain[4] + noise)#/52
+  
+  update(bystrain_prop[]) <-
+    if(i==1)
+      cumulative_cases_strain[i]/sum(cumulative_cases_strain)
+  else if(i==2)
+    cumulative_cases_strain[i]/sum(cumulative_cases_strain)
+  else if(i==3)
+    cumulative_cases_strain[i]/sum(cumulative_cases_strain)
+  else
+    cumulative_cases_strain[i]/sum(cumulative_cases_strain)
+  
   
   dim(cumulative_cases_strain)<-N_strain
-  initial(cumulative_cases_strain[] , zero_every = 30) <- 0
-  
-  
-  
-  # update(cumulative_cases_strain[]) <-
-  #   if(i==1)
-  #     (cumulative_cases_strain[i] + reported_day_gi3)
-  # else if(i==2)
-  #   (cumulative_cases_strain[i]  + reported_day_gi)
-  # else if(i==3)
-  #   (cumulative_cases_strain[i]+ reported_day_gii4)
-  # else
-  #   (cumulative_cases_strain[i] + reported_day_gii)
-  # 
-  # 
-  # update(bystrain_prop[]) <-
-  #   if(i==1)
-  #     cumulative_cases_strain[i]/sum(cumulative_cases_strain)
-  # else if(i==2)
-  #   cumulative_cases_strain[i]/sum(cumulative_cases_strain)
-  # else if(i==3)
-  #   cumulative_cases_strain[i]/sum(cumulative_cases_strain)
-  # else
-  #   cumulative_cases_strain[i]/sum(cumulative_cases_strain)
-  # 
-  # 
-  # dim(cumulative_cases_strain)<-N_strain
-  # dim(bystrain_prop)<-N_strain
-  # initial(cumulative_cases_strain[] , zero_every = 365) <- 0
-  # initial(bystrain_prop[]) <- 0
+  dim(bystrain_prop)<-N_strain
+  initial(cumulative_cases_strain[] , zero_every = 365) <- 0
+  initial(bystrain_prop[]) <- 0
   
   
   
@@ -1606,7 +1585,7 @@ noro_model <- odin({
     sum(R4[,3])
   
   update(sus_cross_gi3) <- 
-    sum(R[,2]) +
+    sum(R[,2])+
     sum(R2[,2])+
     sum(R2[,3])+
     sum(R3[,2])+
@@ -1617,17 +1596,14 @@ noro_model <- odin({
   
   update(sus_re_gi3) <- 
     sum(R[,1])+
-    sum(R1)+
     sum(R2[,1])+
     sum(R3[,1])+
     sum(R4[,1])+
-    sum(R12) +
-    sum(R13) +
-    sum(R14) +
     sum(R23[,1])+
     sum(R24[,1])+
     sum(R34[,1])+
-    sum(R4rd)
+    sum(R4rd[,1])
+  
   
   update(sus_gi) <- 
     sum(S)+
@@ -1649,15 +1625,12 @@ noro_model <- odin({
   update(sus_re_gi)  <- 
     sum(R[,2])+
     sum(R1[,1])+
-    sum(R2) +
     sum(R3[,2])+
     sum(R4[,2])+
-    sum(R12) +
     sum(R13[,1])+
     sum(R14[,1])+
-    sum(R23) +
-    sum(R34[,2])+ 
-    sum(R4rd)
+    sum(R34[,2])+ #################################################################
+  sum(R4rd[,2])
   
   
   update(sus_gii4) <- 
@@ -1679,15 +1652,11 @@ noro_model <- odin({
     sum(R[,3])+
     sum(R1[,2])+
     sum(R2[,2])+
-    sum(R3)+
     sum(R4[,3])+
     sum(R12[,1])+
-    sum(R13)+
     sum(R14[,2])+
-    sum(R23)+
     sum(R24[,2])+
-    sum(R34)+
-    sum(R4rd)
+    sum(R4rd[,3])
   
   
   update(sus_gii) <- 
@@ -1710,19 +1679,19 @@ noro_model <- odin({
     sum(R1[,3])+
     sum(R2[,3])+
     sum(R3[,3])+
-    sum(R4) +
     sum(R12[,2])+
     sum(R13[,2])+
-    sum(R14) +
     sum(R23[,2])+
-    sum(R24)+
-    sum(R34)+
-    sum(R4rd)
+    sum(R4rd[,4])
   
   
   
   update(covid_timeline)<-contact_matrix[5,5]
   
+  
+ # browser(phase = "update", when = time ==20635)
+  
+  #print("cumulative_cases_strain[3]: {cumulative_cases_strain[3]}", when = time > 21358 && time < 21400)
   
   # Individual probabilities of transition: -------------------------------------------------------
   
@@ -1731,13 +1700,12 @@ noro_model <- odin({
   p_aging[]  <- 1 - exp(-aging_vec[i] * dt)
   p_MS[]     <- 1 - exp(-(1/maternalAB) * dt)  # M to S
   p_SE[,]    <- max(1 - exp(-lambda[i,j] * dt),0.0)
-  p_RE[, ,]  <- max(1 - exp(- lambda_cross[i,j,k] * dt),0.0) # S to I age/vacc dependent
+  p_RE[, ,]  <-  max(1 - exp(- lambda_cross[i,j,k] * dt),0.0) # S to I age/vacc dependent
   p_EI       <- 1 - exp(-(1/epsilon) * dt) # E to I
   p_IA_5     <- 1 - exp(-(1/theta_5) * dt) # I to A
   p_IA_5p    <- 1 - exp(-(1/theta_5p) * dt) # I to A
   p_AR       <- 1 - exp(-(1/sigma) * dt) # A to R
   p_wane     <- 1 - exp(- (1/(imm_yr*365)) * dt) # R to S
-  p_RS2      <- 1 - exp(- (1/(imm_yr*imm_fac*365)) * dt) # R to S
   p_vacc[]   <- 1 - exp(- vaccination_coverage[i] * dt) # mortality
    dim(p_RE) <- c(N_age, N_strain, N_strain)  
   N_byage[]<-(   
@@ -1929,7 +1897,6 @@ noro_model <- odin({
   dim(age_RR)<-N_age
   
   age_RR[]<-if(i<8) 1 else aduRR
-  #age_RR[]<-if(i<5) 1-aduRR else 1
   
   
   # infectives GI3
@@ -1995,10 +1962,10 @@ noro_model <- odin({
   dim(c2_ij) <-  N_age
   dim(c3_ij) <-  N_age
   dim(c4_ij) <-  N_age
-  s_ij_1[,]<- contact_matrix[i,j]  * c1_ij[j] #* age_RR[i]
-  s_ij_2[,]<- contact_matrix[i,j]  * c2_ij[j] #* age_RR[i]
-  s_ij_3[,]<- contact_matrix[i,j]  * c3_ij[j] #* age_RR[i]
-  s_ij_4[,]<- contact_matrix[i,j]  * c4_ij[j] #* age_RR[i]
+  s_ij_1[,]<- contact_matrix[i,j]  * c1_ij[j]
+  s_ij_2[,]<- contact_matrix[i,j]  * c2_ij[j]
+  s_ij_3[,]<- contact_matrix[i,j]  * c3_ij[j]
+  s_ij_4[,]<- contact_matrix[i,j]  * c4_ij[j]
   
   
   dim(s_ij_1) <- c(N_age, N_age)
@@ -2006,9 +1973,11 @@ noro_model <- odin({
   dim(s_ij_3) <- c(N_age, N_age)
   dim(s_ij_4) <- c(N_age, N_age)
   
-  # Note the -20 is to rescale the parameters and allow calibration pof negative values of lag with a log transformation
-  season_func<-(1 + season_amp* cos(2 * pi * (time - (season_lag-20)) /365))
+  #season_func<-(1 + 0.15* cos(2 * pi * (time - 10) /365))
   
+# Note the -20 is to rescale the parameters and allow calibration pof negative values of lag with a log transformation
+  season_func<-(1 + season_amp* cos(2 * pi * (time - (season_lag-20)) /365))
+
   
   beta_1_t <- beta_1 * season_func#(1 + 0.15* cos(2 * pi * (time - 0) /365))
   beta_2_t <- beta_2 * season_func#(1 + 0.15* cos(2 * pi * (time - 0) /365))
@@ -2026,7 +1995,7 @@ noro_model <- odin({
   lambda[,4]  <-lambda_4[i] 
   
   
-
+  
   # Cros  protection matrix
     cross_map[,] <-if (i==1) ( 
     if(j==2) 1-crossp_GI else 1 ) else if(i==2)(
@@ -2152,7 +2121,7 @@ n_muI4rd[, ] <- Binomial(I4rd[i, j]-n_ageoI4rd[i, j] , p_mu[i])
 n_muA4rd[, ] <- Binomial(A4rd[i, j]-n_ageoA4rd[i, j] , p_mu[i])
 n_muR4rd[, ] <- Binomial(R4rd[i, j]-n_ageoR4rd[i, j] , p_mu[i])
 
-  
+
   
   
   
@@ -2209,13 +2178,33 @@ n_ageiR[,] <- if (i>1) n_ageoR[max(1, i-1),j] else 0.0
   n_ageiI4rd[,] <- if (i>1) n_ageoI4rd[max(1,i-1),j] else 0
   n_ageiA4rd[,] <- if (i>1) n_ageoA4rd[max(1,i-1),j] else 0
   n_ageiR4rd[,] <- if (i>1) n_ageoR4rd[max(1,i-1),j] else 0
-  
+
   
   ########### Draws from binomial distributions for numbers changing between
   ## compartments:
   ###############################################
+  rel_wane_strain[, ] <-
+    (if (sum(rel_foi_strain[i,]) == 0)
+      0.25 else
+        min(1-rel_foi_strain[i,j] / (1-rel_foi_strain[i,1]+
+                                       1-rel_foi_strain[i,2]+
+                                       1-rel_foi_strain[i,3]+
+                                       1-rel_foi_strain[i,4]),
+            as.numeric(1)))
   
+  rel_foi_strain[,]<- if (sum(lambda[i,]) == 0) 0 else(
+    if (j < N_strain)
+      max(
+        1-(1-(min(lambda[i, j] / sum(lambda[i,]),as.numeric(1)))),
+        as.numeric(0)
+      ) else
+        max(min(1-sum(rel_foi_strain[i, 1:3]),as.numeric(1)),as.numeric(0))
+  )
+  
+  dim(rel_wane_strain) <- c(N_age, N_strain)
+  dim(rel_foi_strain) <- c(N_age, N_strain)
  
+  
   
   # Vaccine switches --------------------------------------------------------
   
@@ -2231,7 +2220,7 @@ n_ageiR[,] <- if (i>1) n_ageoR[max(1, i-1),j] else 0.0
   
   
   # M transitions -----------------------------------------------------------
-
+  
   
   
   n_MS[]   <- Binomial(M[i] - n_ageoM[i] - n_muM[i], p_MS[i])
@@ -2239,25 +2228,6 @@ n_ageiR[,] <- if (i>1) n_ageoR[max(1, i-1),j] else 0.0
   n_Mvacc_c[]<- Binomial(M[i] - n_ageoM[i] - n_muM[i] - n_MS[i], p_vacc[i]* switch_vacc3[i])
   
   n_Mvacc[]<- n_Mvacc_c[i] * vacc_trans
-
-  # rel_foi_strain[,]<- if (sum(lambda[i,]) == 0) 0 else(
-  #   if (j < N_strain)
-  #     max(
-  #       1-(1-(min(lambda[i, j] / sum(lambda[i,]),as.numeric(1)))),
-  #       as.numeric(0)
-  #     ) else
-  #       max(min(1-sum(rel_foi_strain[i, 1:3]),as.numeric(1)),as.numeric(0))
-  # )
-
-  
-  # rel_foi_strain[, ] <- (if (sum(lambda[i, ]) == 0)
-  #   (if (j == 1) 1 else 0) else #
-  #     max(
-  #       1-(1-(min(lambda[i, j] / sum(lambda[i,]),as.numeric(1)))),
-  #       as.numeric(0)
-  #     )
-  #   )
-
   
   # rel_foi_strain[,]<- if (sum(lambda[i,]) == 0) 0 else(
   #   if (j < N_strain)
@@ -2311,6 +2281,8 @@ n_ageiR[,] <- if (i>1) n_ageoR[max(1, i-1),j] else 0.0
   dim(n_Mvacc_c)   <- N_age
   
   # S to E transitions ------------------------------------------------------
+  
+  
   n_Svacc_c[] <- Binomial(S[i] - n_ageoS[i] - n_muS[i], p_vacc[i]* switch_vacc3[i])
   
   n_Svacc[]   <- n_Svacc_c[i]*vacc_trans
@@ -2322,8 +2294,8 @@ n_ageiR[,] <- if (i>1) n_ageoR[max(1, i-1),j] else 0.0
  n_S_E[,] <- if (j==1) Binomial(S[i] - n_ageoS[i] - n_muS[i], p_SE[i,j]) else
    Binomial(S[i] - n_ageoS[i] - n_muS[i] - sum(n_S_E[i,1:(j-1)]), p_SE[i,j])
 
-
-
+  
+  
   # Multinomial draw (via nested binomial) for multiple strain infection
   # n_S_E[, 1] <- Binomial(n_S_E_tot[i] , rel_foi_strain[i, 1])
 
@@ -2485,6 +2457,7 @@ n_ageiR[,] <- if (i>1) n_ageoR[max(1, i-1),j] else 0.0
 
 
   n_R_wane[, ] <- Binomial(R[i, j] - n_ageoR[i, j] - n_muR[i, j], p_wane)
+  
   n_Rvacc_c[, ] <- Binomial(R[i, j] - n_ageoR[i, j] - n_muR[i, j]-n_R_wane[i,j ],p_vacc[i]* switch_vacc3[i])
   n_Rvacc[, ] <- n_Rvacc_c[i,j] * vacc_trans
   
@@ -2508,16 +2481,16 @@ n_ageiR[,] <- if (i>1) n_ageoR[max(1, i-1),j] else 0.0
   #                                     n_R_tot[i, j] - sum(n_R_progress[i, j, 1:3]))
  
 
-
+  
   n_R_A[,1]  <- n_R_progress[i,1,1]
   n_R_A[,2]  <- n_R_progress[i,2,2]
   n_R_A[,3]  <- n_R_progress[i,3,3]
   n_R_A[,4]  <- n_R_progress[i,4,4]
-
+  
   n_R_E1[,1] <- n_R_progress[i,1,2]
   n_R_E1[,2] <- n_R_progress[i,1,3]
   n_R_E1[,3] <- n_R_progress[i,1,4]
-
+  
 
   n_R_E2[,1] <- n_R_progress[i,2,1]  
   n_R_E2[,2] <- n_R_progress[i,2,3]
@@ -2539,11 +2512,11 @@ n_ageiR[,] <- if (i>1) n_ageoR[max(1, i-1),j] else 0.0
   
 
 
-  
-  
+
+
   ########## Transitions R1   ###########################################
   
-  n_R1_wane[, ] <- Binomial(R1[i, j] - n_ageoR1[i, j] - n_muR1[i, j], p_RS2)
+  n_R1_wane[, ] <- Binomial(R1[i, j] - n_ageoR1[i, j] - n_muR1[i, j], p_wane)
   
   n_R1vacc_c[, ] <- Binomial(R1[i, j] - n_ageoR1[i, j] - n_muR1[i, j]-  n_R1_wane[i,j],p_vacc[i]* switch_vacc3[i])
   n_R1vacc[, ]   <- n_R1vacc_c[i,j] * vacc_trans
@@ -2553,7 +2526,7 @@ n_ageiR[,] <- if (i>1) n_ageoR[max(1, i-1),j] else 0.0
  p_RE1[,2,] <- p_RE[i,3,j]
  p_RE1[,3,] <- p_RE[i,4,j]
 dim(p_RE1) <- c(N_age,N_strain_1,N_strain)
-
+  
   n_R1_progress[, , ] <- if (k==1) Binomial(((R1[i, j] - n_ageoR1[i, j] - n_muR1[i, j] - n_R1_wane[i, j]) ), p_RE1[i,j,k]) else
     Binomial((R1[i, j] - n_ageoR1[i, j] - n_muR1[i, j] - n_R1_wane[i, j]-sum(n_R1_progress[i,j,1:(k-1)])), p_RE1[i,j,k])
 
@@ -2565,7 +2538,7 @@ dim(p_RE1) <- c(N_age,N_strain_1,N_strain)
   #   (if (k == 2 || k == 3) Binomial(n_R1_tot[i, j] - sum(n_R1_progress[i, j, 1:(k - 1)]),
   #   min(rel_foi_strain[i, k] / sum(rel_foi_strain[i, k:N_strain]), as.numeric(1))) else
   #     n_R1_tot[i, j] - sum(n_R1_progress[i, j, 1:3]))
- 
+
 
   # R1 reinfections from current strain
   #n_reinf_A2[,1]<- n_R1_rel1[i,1]
@@ -2573,39 +2546,37 @@ dim(p_RE1) <- c(N_age,N_strain_1,N_strain)
   n_R1_A1[,2]   <- n_R1_progress[i,2,3]
   n_R1_A1[,3]   <- n_R1_progress[i,3,4]
 
-
+  
   n_R1_E12[,1]  <- n_R1_progress[i,1,3]
   n_R1_E12[,2]  <- n_R1_progress[i,1,4]
-  
-  
+
+ 
   #n_reinf_A3[,1]<- n_R1_rel2[i,1]
   n_R1_E13[, 1] <- n_R1_progress[i,2,2]
   n_R1_E13[, 2] <- n_R1_progress[i,2,4]
 
-
+ 
   #n_reinf_A4[,1]<- n_R1_rel3[i,1]
   n_R1_E14[, 1] <- n_R1_progress[i,3,2]
   n_R1_E14[, 2] <- n_R1_progress[i,3,3]
-  
+ 
   #dim(n_R1_tot)  <- c(N_age, N_strain_1, N_strain)
   dim(n_R1_progress) <- c(N_age, N_strain_1,N_strain)
   dim(n_R1vacc)  <- c(N_age, N_strain_1)
   dim(n_R1vacc_c) <- c(N_age, N_strain_1)
   ########## Transitions R2 
   
-  n_R2_wane[, ] <- Binomial(R2[i, j] - n_ageoR2[i, j] - n_muR2[i, j], p_RS2)
-  
+  n_R2_wane[, ] <- Binomial(R2[i, j] - n_ageoR2[i, j] - n_muR2[i, j], p_wane)
   
   n_R2vacc_c[,] <- Binomial(R2[i, j] - n_ageoR2[i, j] - n_muR2[i, j]-n_R2_wane[i,j],p_vacc[i]* switch_vacc3[i])
   n_R2vacc[,] <- n_R2vacc_c[i,j] * vacc_trans
-  
   
   
  p_RE2[,1,] <- p_RE[i,1,j]
  p_RE2[,2,] <- p_RE[i,3,j]
  p_RE2[,3,] <- p_RE[i,4,j]
  dim(p_RE2) <- c(N_age,N_strain_1,N_strain)
-
+  
   n_R2_progress[,,] <- if (k==1)Binomial(((R2[i, j] - n_ageoR2[i, j] - n_muR2[i, j] - n_R2_wane[i, j] ) ),p_RE2[i,j,k]) else
     Binomial((R2[i, j] - n_ageoR2[i, j] - n_muR2[i, j] - n_R2_wane[i, j]-sum(n_R2_progress[i,j,1:(k-1)])), p_RE2[i,j,k])
 
@@ -2618,8 +2589,8 @@ dim(p_RE1) <- c(N_age,N_strain_1,N_strain)
   #   min(rel_foi_strain[i, k] / sum(rel_foi_strain[i, k:N_strain]), as.numeric(1))) else
   #     n_R2_tot[i, j] - sum(n_R2_progress[i, j, 1:3]))
 
-
-
+  
+  
   # R2 reinfections from current strain
   n_R2_A2[,1]   <- n_R2_progress[i,1,1]
   n_R2_A2[,2]   <- n_R2_progress[i,2,3]
@@ -2631,18 +2602,18 @@ dim(p_RE1) <- c(N_age,N_strain_1,N_strain)
   n_R2_E12[,1]  <- n_R2_progress[i,1,3]
   n_R2_E12[,2]  <- n_R2_progress[i,1,4]
 
-
+  
   n_R2_E23[, 1] <- n_R2_progress[i,2,1]
   n_R2_E23[, 2] <- n_R2_progress[i,2,4]
-
-  #n_reinf_A3[,2]<- n_R2_rel2[i,2]
   
-   
+  #n_reinf_A3[,2]<- n_R2_rel2[i,2]  
+
+
   
   n_R2_E24[, 1] <- n_R2_progress[i,3,1]
   n_R2_E24[, 2] <- n_R2_progress[i,3,3]
 
-
+  
   #n_reinf_A4[,2]<-n_R2_rel3[i,2]
   
   #dim(n_R2_tot)  <- c(N_age, N_strain_1, N_strain)
@@ -2654,17 +2625,18 @@ dim(p_RE1) <- c(N_age,N_strain_1,N_strain)
   
   ########## Transitions R3 
   
-  n_R3_wane[, ] <- Binomial(R3[i, j] - n_ageoR3[i, j] - n_muR3[i, j], p_RS2)
+  n_R3_wane[, ] <- Binomial(R3[i, j] - n_ageoR3[i, j] - n_muR3[i, j], p_wane)
   
   n_R3vacc_c[, ]  <- Binomial(R3[i, j] - n_ageoR3[i, j] - n_muR3[i, j]-n_R3_wane[i,j],p_vacc[i]* switch_vacc3[i])
   n_R3vacc[, ]    <- n_R3vacc_c[i,j] * vacc_trans
+  
   
 
  p_RE3[,1,] <- p_RE[i,1,j]
  p_RE3[,2,] <- p_RE[i,2,j]
  p_RE3[,3,] <- p_RE[i,4,j]
 dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
-
+  
   n_R3_progress[,,] <- if (k==1) Binomial(((R3[i, j] - n_ageoR3[i, j] - n_muR3[i, j] - n_R3_wane[i, j] ) ),p_RE3[i,j,k]) else
     Binomial((R3[i, j] - n_ageoR3[i, j] - n_muR3[i, j] - n_R3_wane[i, j]-sum(n_R3_progress[i,j,1:(k-1)])), p_RE3[i,j,k])
 
@@ -2693,20 +2665,20 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
 
   n_R3_E34[,1]  <- n_R3_progress[i,3,1]
   n_R3_E34[,2]  <- n_R3_progress[i,3,2]
-
-
+  
+    
   #dim(n_R3_tot) <- c(N_age, N_strain_1, N_strain)
   dim(n_R3_progress) <- c(N_age, N_strain_1, N_strain)
   
   dim(n_R3vacc)  <- c(N_age, N_strain_1)
   dim(n_R3vacc_c)  <- c(N_age, N_strain_1)
+
   ########## Transitions R4 
-  
-  n_R4_wane[, ] <- Binomial(R4[i, j] - n_ageoR4[i, j] - n_muR4[i, j], p_RS2)
+  n_R4_wane[, ] <- Binomial(R4[i, j] - n_ageoR4[i, j] - n_muR4[i, j], p_wane)
   
   n_R4vacc_c[, ] <- Binomial(R4[i, j] - n_ageoR4[i, j] - n_muR4[i, j]-n_R4_wane[i,j],p_vacc[i]* switch_vacc3[i])
   n_R4vacc[, ]   <- n_R4vacc_c[i,j] * vacc_trans
-
+  
  p_RE4[,1,] <- p_RE[i,1,j]
  p_RE4[,2,] <- p_RE[i,2,j]
  p_RE4[,3,] <- p_RE[i,3,j]
@@ -2740,13 +2712,16 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   dim(n_R4_progress) <- c(N_age, N_strain_1, N_strain)
   dim(n_R4vacc)  <- c(N_age, N_strain_1)
   dim(n_R4vacc_c)  <- c(N_age, N_strain_1)
+
   
   
-  ## TODO
+
+
+
   
   ########## Transitions R12 
   
-  n_R12_wane[, ] <- Binomial(R12[i, j] - n_ageoR12[i, j] - n_muR12[i, j], p_RS2)
+  n_R12_wane[, ] <- Binomial(R12[i, j] - n_ageoR12[i, j] - n_muR12[i, j], p_wane)
   
   n_R12vacc_c[, ] <- Binomial(R12[i, j] - n_ageoR12[i, j] - n_muR12[i, j]- n_R12_wane[i,j],p_vacc[i]* switch_vacc3[i])
   n_R12vacc[, ]   <- n_R12vacc_c[i,j] * vacc_trans
@@ -2762,18 +2737,18 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   #   (if (k == 2 || k == 3) Binomial(n_R12_tot[i, j] - sum(n_R12_progress[i, j, 1:(k - 1)]),
   #   min(rel_foi_strain[i,  k] / sum(rel_foi_strain[i, k:N_strain]), as.numeric(1))) else
   #     n_R12_tot[i, j] - sum(n_R12_progress[i, j, 1:3]))
-
+  
   # Refinfection with same strain
   n_R12_A12[,1]   <- n_R12_progress[i,1,3]
   n_R12_A12[,2]   <-  n_R12_progress[i,2,4]
   
-    
+  
   n_R12_E4rd[, 1] <-0
   n_R12_E4rd[, 2] <-0
   n_R12_E4rd[, 4] <- n_R12_progress[i,1,4]
   n_R12_E4rd[, 3] <- n_R12_progress[i,2,3]
-  
-  
+
+
   
   
   dim(n_R12_progress) <- c(N_age, N_strain_2,N_strain)
@@ -2790,7 +2765,7 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   # dim(n_R23_tot) <- c(N_age, N_strain_2,N_strain)
   # dim(n_R24_tot) <- c(N_age, N_strain_2,N_strain)
   # dim(n_R34_tot) <- c(N_age, N_strain_2,N_strain)
-
+  
   dim(n_R12vacc) <- c(N_age, N_strain_2)
   dim(n_R13vacc) <- c(N_age, N_strain_2)
   dim(n_R14vacc) <- c(N_age, N_strain_2)
@@ -2809,12 +2784,12 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   
   ########## Transitions R13 
   
-  n_R13_wane[, ] <- Binomial(R13[i, j] - n_ageoR13[i, j] - n_muR13[i, j], p_RS2)
+  n_R13_wane[, ] <- Binomial(R13[i, j] - n_ageoR13[i, j] - n_muR13[i, j], p_wane)
   
-  n_R13vacc_c[, ] <- Binomial(R13[i, j] - n_ageoR13[i, j] - n_muR13[i, j]-  n_R13_wane[i,j], p_RS2) 
+  n_R13vacc_c[, ] <- Binomial(R13[i, j] - n_ageoR13[i, j] - n_muR13[i, j]-  n_R13_wane[i,j], p_wane) 
   
   n_R13vacc[, ] <- n_R13vacc_c[i,j] * vacc_trans
-
+  
  p_RE13[,1,] <- p_RE[i,2,j]
  p_RE13[,2,] <- p_RE[i,4,j]
  dim(p_RE13) <- c(N_age,N_strain_2,N_strain)
@@ -2827,12 +2802,12 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   #   (if (k == 2 || k == 3) Binomial(n_R13_tot[i, j] - sum(n_R13_progress[i, j, 1:(k - 1)]),
   #   min(rel_foi_strain[i, k] / sum(rel_foi_strain[i, k:N_strain]), as.numeric(1))) else
   #     n_R13_tot[i, j] - sum(n_R13_progress[i, j, 1:3]))
-
+  
   # reinfection from same strain
   n_R13_A13[,1]   <- n_R13_progress[i,1,2]
   n_R13_A13[,2]   <- n_R13_progress[i,2,4]
   
-  
+ 
   n_R13_E4rd[, 1] <- 0
   n_R13_E4rd[, 2] <- n_R13_progress[i,2, 2]
   n_R13_E4rd[, 3] <- 0
@@ -2840,12 +2815,12 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   
   ########## Transitions R14 (not 1 and 4, j 2 and 3) 
   
-  n_R14_wane[, ] <- Binomial(R14[i, j] - n_ageoR14[i, j] - n_muR14[i, j], p_RS2)
+  n_R14_wane[, ] <- Binomial(R14[i, j] - n_ageoR14[i, j] - n_muR14[i, j], p_wane)
   
-  n_R14vacc_c[, ] <- Binomial(R14[i, j] - n_ageoR14[i, j] - n_muR14[i, j]-n_R14_wane[i,j], p_RS2)
+  n_R14vacc_c[, ] <- Binomial(R14[i, j] - n_ageoR14[i, j] - n_muR14[i, j]-n_R14_wane[i,j], p_wane)
   n_R14vacc[, ]   <- n_R14vacc_c[i,j] * vacc_trans
   
-
+  
  p_RE14[,1,] <- p_RE[i,2,j]
  p_RE14[,2,] <- p_RE[i,3,j]
  dim(p_RE14) <- c(N_age,N_strain_2,N_strain)
@@ -2864,21 +2839,21 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   n_R14_A14[,1]   <- n_R14_progress[i,1,2]
   n_R14_A14[,2]   <- n_R14_progress[i,2,3] 
   
-  
+
   n_R14_E4rd[, 1] <- 0
   n_R14_E4rd[, 2] <- n_R14_progress[i,2, 2]
   n_R14_E4rd[, 3] <- n_R14_progress[i,1, 3]
   n_R14_E4rd[, 4] <- 0
   
-  
+
   ########## Transitions R23 (not 2 and 3, j 1 and 4) 
   
-  n_R23_wane[, ] <- Binomial(R23[i, j] - n_ageoR23[i, j] - n_muR23[i, j], p_RS2)
+  n_R23_wane[, ] <- Binomial(R23[i, j] - n_ageoR23[i, j] - n_muR23[i, j], p_wane)
   
-  n_R23vacc_c[, ] <- Binomial(R23[i, j] - n_ageoR23[i, j] - n_muR23[i, j]-  n_R23_wane[i,j], p_RS2)
+  n_R23vacc_c[, ] <- Binomial(R23[i, j] - n_ageoR23[i, j] - n_muR23[i, j]-  n_R23_wane[i,j], p_wane)
   n_R23vacc[, ]   <- n_R23vacc_c[i,j]*vacc_trans
-
-
+  
+  
  p_RE23[,1,] <- p_RE[i,1,j]
  p_RE23[,2,] <- p_RE[i,4,j]
  dim(p_RE23) <- c(N_age,N_strain_2,N_strain)
@@ -2895,20 +2870,20 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   # reinf from same strain
   n_R23_A23[,1]   <- n_R23_progress[i,1,1]
   n_R23_A23[,2]   <- n_R23_progress[i,2,4]
-    
+  
   
   n_R23_E4rd[, 1] <- n_R23_progress[i,2, 1]
-  n_R23_E4rd[, 2] <- 0
-  n_R23_E4rd[, 3] <- 0
+   n_R23_E4rd[, 2] <- 0
+   n_R23_E4rd[, 3] <- 0
   n_R23_E4rd[, 4] <- n_R23_progress[i,1, 4]
   
   ########## Transitions R24 (not 2 and 4, j 1 and 3) 
   
-  n_R24_wane[, ] <- Binomial(R24[i, j] - n_ageoR24[i, j] - n_muR24[i, j], p_RS2)
+  n_R24_wane[, ] <- Binomial(R24[i, j] - n_ageoR24[i, j] - n_muR24[i, j], p_wane)
   
-  n_R24vacc_c[, ] <- Binomial(R24[i, j] - n_ageoR24[i, j] - n_muR24[i, j]-n_R24_wane[i,j], p_RS2)
+  n_R24vacc_c[, ] <- Binomial(R24[i, j] - n_ageoR24[i, j] - n_muR24[i, j]-n_R24_wane[i,j], p_wane)
   n_R24vacc[, ]   <- n_R24vacc_c[i,j]*vacc_trans
-
+  
  p_RE24[,1,] <- p_RE[i,1,j]
   p_RE24[,2,] <- p_RE[i,3,j]
   dim(p_RE24) <- c(N_age,N_strain_2,N_strain)
@@ -2916,7 +2891,7 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
    n_R24_progress[,,] <- if (k==1) Binomial(((R24[i, j] - n_ageoR24[i, j] - n_muR24[i, j] - n_R24_wane[i, j] ) ), 
                              p_RE24[i,j,k]) else
    Binomial((R24[i, j] - n_ageoR24[i, j] - n_muR24[i, j] - n_R24_wane[i, j]-sum(n_R24_progress[i,j,1:(k-1)])), p_RE24[i,j,k])
-
+  
       #  n_R24_progress[, , ] <- if (k == 1) Binomial(n_R24_tot[i, j], rel_foi_strain[i, 1]) else
       #     (if (k == 2 || k == 3) Binomial(n_R24_tot[i, j] - sum(n_R24_progress[i, j, 1:(k - 1)]),
       #     min(rel_foi_strain[i, k] / sum(rel_foi_strain[i, k:N_strain]), as.numeric(1))) else
@@ -2935,12 +2910,12 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   
   ########## Transitions R34 (not 3 and 4, j 1 and 2) 
   
-  n_R34_wane[, ] <- Binomial(R34[i, j] - n_ageoR34[i, j] - n_muR34[i, j], p_RS2)
+  n_R34_wane[, ] <- Binomial(R34[i, j] - n_ageoR34[i, j] - n_muR34[i, j], p_wane)
   
-  n_R34vacc_c[, ] <- Binomial(R34[i, j] - n_ageoR34[i, j] - n_muR34[i, j]-n_R34_wane[i,j], p_RS2)
+  n_R34vacc_c[, ] <- Binomial(R34[i, j] - n_ageoR34[i, j] - n_muR34[i, j]-n_R34_wane[i,j], p_wane)
   n_R34vacc[, ]   <- n_R34vacc_c[i,j]*vacc_trans
-
-
+  
+  
  p_RE34[,1,] <- p_RE[i,1,j]
  p_RE34[,2,] <- p_RE[i,2,j]
  dim(p_RE34) <- c(N_age,N_strain_2,N_strain)
@@ -2958,30 +2933,30 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
 #     (if (k == 2 || k == 3) Binomial(n_R34_tot[i, j] - sum(n_R34_progress[i, j, 1:(k - 1)]),
 #     min(rel_foi_strain[i, k] / sum(rel_foi_strain[i,  k:N_strain]), as.numeric(1))) else
 #       n_R34_tot[i, j] - sum(n_R34_progress[i, j, 1:3]))
- 
+  
   # reinf from strain
   n_R34_A34[,1]   <- n_R34_progress[i,1,1]
   n_R34_A34[,2]   <- n_R34_progress[i,2,2]
-    
+  
   n_R34_E4rd[, 1] <- n_R34_progress[i,2, 1] 
   n_R34_E4rd[, 2] <- n_R34_progress[i,1, 2]
   n_R34_E4rd[, 3] <- 0
   n_R34_E4rd[, 4] <- 0
+
+  ########### R 4rd transitions 
   
-  ########### R 4rd transitions HERE
+  n_R4rd_wane[, ] <- Binomial(R4rd[i, j] - n_ageoR4rd[i, j] - n_muR4rd[i, j], p_wane)
   
-  n_R4rd_wane[, ] <- Binomial(R4rd[i, j] - n_ageoR4rd[i, j] - n_muR4rd[i, j], p_RS2)
-  
-  n_R4rdvacc_c[, ] <- Binomial(R4rd[i, j] - n_ageoR4rd[i, j] - n_muR4rd[i, j]-  n_R4rd_wane[i,j], p_RS2)  
+  n_R4rdvacc_c[, ] <- Binomial(R4rd[i, j] - n_ageoR4rd[i, j] - n_muR4rd[i, j]-  n_R4rd_wane[i,j], p_wane)  
   n_R4rdvacc[, ]   <- n_R4rdvacc_c[i,j] * vacc_trans  
   
   # Leave R 
    n_R4rd_progress[,,] <- if (k==1) Binomial(((R4rd[i, j] -
-                                  n_ageoR4rd[i, j] - 
-                                  n_muR4rd[i, j] - 
+   n_ageoR4rd[i, j] - 
+   n_muR4rd[i, j] - 
                                   n_R4rd_wane[i, j]) ), p_RE[i,j,k]) else 
    Binomial((R4rd[i, j] - n_ageoR4rd[i, j] - n_muR4rd[i, j] - n_R4rd_wane[i, j]-sum(n_R4rd_progress[i,j,1:(k-1)])), p_RE[i,j,k])
-
+  
 
 # n_R4rd_progress[, , ] <- if (k == 1) Binomial(n_R4rd_tot[i, j], rel_foi_strain[i, 1]) else
 #     (if (k == 2 || k == 3) Binomial(n_R4rd_tot[i, j] - sum(n_R4rd_progress[i, j, 1:(k - 1)]),
@@ -2989,7 +2964,7 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
 #       n_R4rd_tot[i, j] - sum(n_R4rd_progress[i, j, 1:3]))
  
 
-
+  
   # reinfections from same strain
   n_R4rd_A4rd[, ] <-  sum(n_R4rd_progress[i,,j])
   
@@ -3035,9 +3010,314 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   
   n_reinf_A34[,1] <- n_R14_progress[i,2,1]+n_R13_progress[i,2,1]
   n_reinf_A34[,2] <- n_R24_progress[i,2,2]+n_R23_progress[i,2,2]
- 
   
-  
+  ########## Total wane from second infection to R   ###########################################
+
+n_R2nd_R[,1] <- n_R2_wane[i, 1] + n_R3_wane[i, 1] + n_R4_wane[i, 1]
+n_R2nd_R[,2] <- n_R1_wane[i, 1] + n_R3_wane[i, 2] + n_R4_wane[i, 2]
+n_R2nd_R[,3] <- n_R1_wane[i, 2] + n_R2_wane[i, 2] + n_R4_wane[i, 3]
+n_R2nd_R[,4] <- n_R1_wane[i, 3] + n_R2_wane[i, 3] + n_R3_wane[i, 3]
+
+ dim(n_R2nd_R)  <- c(N_age, N_strain)
+########## Total wane from third infection to R2nd   ###########################################
+
+wane_jumpR12[,]<- (if ((rel_wane_strain[i, 1]+ rel_wane_strain[i, 2]) == 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 1]/ (rel_wane_strain[i, 1]+ rel_wane_strain[i, 2])),
+            as.numeric(1)) else
+            1-wane_jumpR12[i,max(1,j-1)]))
+
+wane_jumpR13[,]<- (if ((rel_wane_strain[i, 1]+ rel_wane_strain[i, 3]) == 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 1]/ (rel_wane_strain[i, 1]+ rel_wane_strain[i, 3])),
+            as.numeric(1)) else
+            1-wane_jumpR13[i,max(1,j-1)]))
+
+wane_jumpR14[,]<- (if ((rel_wane_strain[i, 1]+ rel_wane_strain[i, 4]) == 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 1]/ (rel_wane_strain[i, 1]+ rel_wane_strain[i, 4])),
+            as.numeric(1)) else
+            1-wane_jumpR14[i,max(1,j-1)]))
+
+wane_jumpR23[,]<- (if ((rel_wane_strain[i, 2]+ rel_wane_strain[i, 3])== 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 2]/ (rel_wane_strain[i, 2]+ rel_wane_strain[i, 3])),
+            as.numeric(1)) else
+            1-wane_jumpR23[i,max(1,j-1)]))
+
+wane_jumpR24[,]<- (if ((rel_wane_strain[i, 2]+ rel_wane_strain[i, 4]) == 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 2]/ (rel_wane_strain[i, 2]+ rel_wane_strain[i, 4])),
+            as.numeric(1)) else
+            1-wane_jumpR24[i,max(1,j-1)]))
+
+wane_jumpR34[,]<- (if ((rel_wane_strain[i, 3]+ rel_wane_strain[i, 4]) == 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 3]/ (rel_wane_strain[i, 3]+ rel_wane_strain[i, 4])),
+            as.numeric(1)) else
+            1-wane_jumpR34[i,max(1,j-1)]))
+
+
+n_R12_1_2nd[,]<- if (sum(wane_jumpR12[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R12_wane[i,1],wane_jumpR12[i,j]) 
+else n_R12_wane[i,1]-n_R12_1_2nd[i,max(1,j-1)])
+
+n_R12_2_2nd[,]<- if (sum(wane_jumpR12[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R12_wane[i,2],wane_jumpR12[i,j]) else
+n_R12_wane[i,2]-n_R12_2_2nd[i,max(1,j-1)])
+
+
+n_R13_1_2nd[,]<-if (sum(wane_jumpR13[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R13_wane[i,1],wane_jumpR13[i,j]) else
+n_R13_wane[i,1]-n_R13_1_2nd[i,max(1,j-1)])
+
+n_R13_2_2nd[,]<-if (sum(wane_jumpR13[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R13_wane[i,2],wane_jumpR13[i,j]) else
+n_R13_wane[i,2]-n_R13_2_2nd[i,max(1,j-1)])
+
+n_R14_1_2nd[,]<-if (sum(wane_jumpR14[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R14_wane[i,1],wane_jumpR14[i,j]) else
+n_R14_wane[i,1]-n_R14_1_2nd[i,max(1,j-1)])
+
+n_R14_2_2nd[,]<-if (sum(wane_jumpR14[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R14_wane[i,2],wane_jumpR14[i,j]) else
+n_R14_wane[i,2]-n_R14_2_2nd[i,max(1,j-1)])
+
+n_R23_1_2nd[,]<-if (sum(wane_jumpR23[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R23_wane[i,1],wane_jumpR23[i,j]) else
+n_R23_wane[i,1]-n_R23_1_2nd[i,max(1,j-1)])
+
+n_R23_2_2nd[,]<-if (sum(wane_jumpR23[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R23_wane[i,2],wane_jumpR23[i,j]) else
+n_R23_wane[i,2]-n_R23_2_2nd[i,max(1,j-1)])
+
+n_R24_1_2nd[,]<-if (sum(wane_jumpR24[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R24_wane[i,1],wane_jumpR24[i,j]) else
+n_R24_wane[i,1]-n_R24_1_2nd[i,max(1,j-1)])
+
+n_R24_2_2nd[,]<-if (sum(wane_jumpR24[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R24_wane[i,2],wane_jumpR24[i,j]) else
+n_R24_wane[i,2]-n_R24_2_2nd[i,max(1,j-1)])
+
+n_R34_1_2nd[,]<-if (sum(wane_jumpR34[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R34_wane[i,1],wane_jumpR34[i,j]) else
+n_R34_wane[i,1]-n_R34_1_2nd[i,max(1,j-1)])
+
+n_R34_2_2nd[,]<-if (sum(wane_jumpR34[i,]) == 0) 
+(if (j == 1) 1 else 0) else 
+( if(j==1) Binomial(n_R34_wane[i,2],wane_jumpR34[i,j]) else
+n_R34_wane[i,2]-n_R34_2_2nd[i,max(1,j-1)])
+
+
+# Split wane into possible strain histories
+n_R3rd_R1[,1] <- n_R13_1_2nd[i,1] + n_R14_1_2nd[i,1]
+n_R3rd_R1[,2] <- n_R12_1_2nd[i,1] + n_R14_2_2nd[i,1]
+n_R3rd_R1[,3] <- n_R12_2_2nd[i,1] + n_R13_2_2nd[i,1]
+
+n_R3rd_R2[,1] <- n_R23_1_2nd[i,1] + n_R24_1_2nd[i,1]
+n_R3rd_R2[,2] <- n_R12_1_2nd[i,2] + n_R24_2_2nd[i,1]
+n_R3rd_R2[,3] <- n_R12_2_2nd[i,2] + n_R23_2_2nd[i,1]
+
+n_R3rd_R3[,1] <- n_R23_1_2nd[i,2] + n_R34_1_2nd[i,1]
+n_R3rd_R3[,2] <- n_R13_1_2nd[i,2] + n_R34_2_2nd[i,1]
+n_R3rd_R3[,3] <- n_R13_2_2nd[i,2] + n_R23_2_2nd[i,2] 
+
+n_R3rd_R4[,1] <- n_R24_1_2nd[i,2] + n_R34_1_2nd[i,2]  
+n_R3rd_R4[,2] <- n_R14_1_2nd[i,2] + n_R34_2_2nd[i,2] 
+n_R3rd_R4[,2] <- n_R14_2_2nd[i,2] + n_R24_2_2nd[i,2]
+
+
+
+
+dim(n_R12_1_2nd)<-c(N_age,N_strain_2)
+dim(n_R12_2_2nd)<-c(N_age,N_strain_2)
+dim(n_R13_1_2nd)<-c(N_age,N_strain_2)
+dim(n_R13_2_2nd)<-c(N_age,N_strain_2)
+dim(n_R14_1_2nd)<-c(N_age,N_strain_2)
+dim(n_R14_2_2nd)<-c(N_age,N_strain_2)
+dim(n_R23_1_2nd)<-c(N_age,N_strain_2)
+dim(n_R23_2_2nd)<-c(N_age,N_strain_2)
+dim(n_R24_1_2nd)<-c(N_age,N_strain_2)
+dim(n_R24_2_2nd)<-c(N_age,N_strain_2)
+dim(n_R34_1_2nd)<-c(N_age,N_strain_2)
+dim(n_R34_2_2nd)<-c(N_age,N_strain_2)
+
+
+dim(n_R3rd_R1)  <- c(N_age, N_strain_1)
+dim(n_R3rd_R2)  <- c(N_age, N_strain_1)
+dim(n_R3rd_R3)  <- c(N_age, N_strain_1)
+dim(n_R3rd_R4)  <- c(N_age, N_strain_1)
+dim(wane_jumpR12)  <- c(N_age, N_strain_2)
+dim(wane_jumpR13)  <- c(N_age, N_strain_2)
+dim(wane_jumpR14)  <- c(N_age, N_strain_2)
+dim(wane_jumpR23)  <- c(N_age, N_strain_2)
+dim(wane_jumpR24)  <- c(N_age, N_strain_2)
+dim(wane_jumpR34)  <- c(N_age, N_strain_2)
+
+
+
+########## Total wane from 4rd infection to R3rd   ###########################################
+
+wane_jumpR4rd_1[,]<- (if (sum(rel_wane_strain[i, 2:N_strain]) == 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 2]/ sum(rel_wane_strain[i, 2:N_strain])),
+            as.numeric(1)) else
+            if (j == 2)
+            min((rel_wane_strain[i, 3]/ sum(rel_wane_strain[i, 2:N_strain])),
+            as.numeric(1)) else
+            1-sum(wane_jumpR4rd_1[i,1:N_strain_2])))
+
+
+
+wane_jumpR4rd_2[,]<- (if ((rel_wane_strain[i, 1]+rel_wane_strain[i, 3]+rel_wane_strain[i, 4]) == 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 1]/ (rel_wane_strain[i, 1]+rel_wane_strain[i, 3]+rel_wane_strain[i, 4])),
+            as.numeric(1)) else
+            if (j == 2)
+            min((rel_wane_strain[i, 3]/ (rel_wane_strain[i, 1]+rel_wane_strain[i, 3]+rel_wane_strain[i, 4])),
+            as.numeric(1)) else
+            1-sum(wane_jumpR4rd_2[i,1:N_strain_2])))
+
+
+
+wane_jumpR4rd_3[,]<- (if ((rel_wane_strain[i, 1]+rel_wane_strain[i, 2]+rel_wane_strain[i, 4]) == 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 1]/ (rel_wane_strain[i, 1]+rel_wane_strain[i, 2]+rel_wane_strain[i, 4])),
+            as.numeric(1)) else
+            if (j == 2)
+            min((rel_wane_strain[i, 2]/ (rel_wane_strain[i, 1]+rel_wane_strain[i, 2]+rel_wane_strain[i, 4])),
+            as.numeric(1)) else
+            1-sum(wane_jumpR4rd_3[i,1:N_strain_2])))
+
+
+
+wane_jumpR4rd_4[,]<- (if (sum(rel_wane_strain[i, 1:N_strain_1]) == 0)
+      (if (j == 1) 1 else 0) else
+      (if (j == 1)
+        min((rel_wane_strain[i, 1]/ sum(rel_wane_strain[i, 1:N_strain_1])),
+            as.numeric(1)) else
+            if (j == 2)
+            min((rel_wane_strain[i, 2]/ sum(rel_wane_strain[i, 1:N_strain_1])),
+            as.numeric(1)) else
+            1-sum(wane_jumpR4rd_4[i,1:N_strain_2])))
+
+
+# Split wane into possible strain histories
+
+
+n_R4rd_1[, 1]   <- Binomial(n_R4rd_wane[i,1],wane_jumpR4rd_1[i,j])
+n_R4rd_1[, 2]   <- (if (sum(wane_jumpR4rd_1[i,]) == 0) 0 else  
+(Binomial(n_R4rd_wane[i,1] - sum(n_R4rd_1[i, 1:(2 - 1)]), wane_jumpR4rd_1[i, 2]/sum(wane_jumpR4rd_1[i, 2:N_strain_1]))))
+n_R4rd_1[, 3] <- (if (sum(wane_jumpR4rd_1[i, 3:N_strain_1]) == 0) 0 else sum(n_R4rd_wane[i,1]) - sum(n_R4rd_1[i, 1:2]))
+
+
+n_R4rd_2[, 1]   <- Binomial(n_R4rd_wane[i,2],wane_jumpR4rd_2[i,j])
+n_R4rd_2[, 2]   <- (if (sum(wane_jumpR4rd_2[i,]) == 0) 0 else  
+(Binomial(n_R4rd_wane[i,2] - sum(n_R4rd_2[i, 1:(2 - 1)]), wane_jumpR4rd_2[i, 2]/sum(wane_jumpR4rd_2[i, 2:N_strain_1]))))
+n_R4rd_2[, 3] <- (if (sum(wane_jumpR4rd_2[i, 3:N_strain_1]) == 0) 0 else sum(n_R4rd_wane[i,2]) - sum(n_R4rd_2[i, 1:2]))
+
+
+n_R4rd_3[, 1]   <- Binomial(n_R4rd_wane[i,3],wane_jumpR4rd_3[i,j])
+n_R4rd_3[, 2]   <- (if (sum(wane_jumpR4rd_3[i,]) == 0) 0 else  
+(Binomial(n_R4rd_wane[i,3] - sum(n_R4rd_3[i, 1:(2 - 1)]), wane_jumpR4rd_3[i, 2]/sum(wane_jumpR4rd_3[i, 2:N_strain_1]))))
+n_R4rd_3[, 3] <- (if (sum(wane_jumpR4rd_3[i, 3:N_strain_1]) == 0) 0 else sum(n_R4rd_wane[i,3]) - sum(n_R4rd_3[i, 1:2]))
+
+n_R4rd_4[, 1]   <- Binomial(n_R4rd_wane[i,4],wane_jumpR4rd_4[i,j])
+n_R4rd_4[, 2]   <- (if (sum(wane_jumpR4rd_4[i,]) == 0) 0 else  
+(Binomial(n_R4rd_wane[i,4] - sum(n_R4rd_4[i, 1:(2 - 1)]), wane_jumpR4rd_4[i, 2]/sum(wane_jumpR4rd_4[i, 2:N_strain_1]))))
+n_R4rd_4[, 3] <- (if (sum(wane_jumpR4rd_4[i, 3:N_strain_1]) == 0) 0 else sum(n_R4rd_wane[i,4]) - sum(n_R4rd_4[i, 1:2]))
+
+
+
+
+#print("n_R4rd_1[1,1]: {n_R4rd_1[1,1]}, n_R4rd_1[1,2]: {n_R4rd_1[1,2]}, n_R4rd_1[1,3]: {n_R4rd_1[1,3]}")
+#print("wane_jumpR4rd_1[1,1]: {wane_jumpR4rd_1[1,1]} , wane_jumpR4rd_1[1,2]: {wane_jumpR4rd_1[1,2]}, wane_jumpR4rd_1[1,3]: {wane_jumpR4rd_1[1,3]}")
+
+#print("rel_foi_strain[1, 1]: {rel_foi_strain[1, 1]}, rel_foi_strain[1, 2]: {rel_foi_strain[1, 2]}, rel_foi_strain[1, 3]: {rel_foi_strain[1, 3]}, rel_foi_strain[1, 4]: {rel_foi_strain[1, 4]} ")
+#print("wane_jumpR4rd_1[1,1]: {wane_jumpR4rd_1[1,1]} , wane_jumpR4rd_1[1,2]: {wane_jumpR4rd_1[1,2]}, wane_jumpR4rd_1[1,3]: {wane_jumpR4rd_1[1,3]}")
+#print("wane_jumpR4rd_2[1,1]: {wane_jumpR4rd_2[1,1]} , wane_jumpR4rd_2[1,2]: {wane_jumpR4rd_2[1,2]}, wane_jumpR4rd_2[1,3]: {wane_jumpR4rd_2[1,3]}")
+
+#print("n_R4rd_wane[1,1]: {n_R4rd_wane[1,1]} , n_R4rd_wane[1,2]: {n_R4rd_wane[1,2]} , n_R4rd_wane[1,3]: {n_R4rd_wane[1,3]}, n_R4rd_wane[1,4]: {n_R4rd_wane[1,4]}")
+
+
+
+
+n_R4rd_R12[,1] <- n_R4rd_3[i,3]  
+n_R4rd_R12[,2] <- n_R4rd_4[i,3] 
+
+n_R4rd_R13[,1] <- n_R4rd_2[i,3]
+n_R4rd_R13[,2] <- n_R4rd_4[i,2]
+
+n_R4rd_R14[,1] <- n_R4rd_2[i,2]
+n_R4rd_R14[,2] <- n_R4rd_3[i,2]
+
+n_R4rd_R23[,1] <- n_R4rd_1[i,3]
+n_R4rd_R23[,2] <- n_R4rd_4[i,1]
+
+n_R4rd_R24[,1] <- n_R4rd_1[i,2]
+n_R4rd_R24[,2] <- n_R4rd_3[i,1]
+
+n_R4rd_R34[,1] <- n_R4rd_1[i,1]
+n_R4rd_R34[,2] <- n_R4rd_2[i,1]
+
+
+
+
+#n_R4rd_R12[,1] <- n_R4rd_wane[i,3] * wane_jumpR4rd_3[i,3]  
+#n_R4rd_R12[,2] <- n_R4rd_wane[i,4] * wane_jumpR4rd_4[i,3] 
+
+#n_R4rd_R13[,1] <- n_R4rd_wane[i,2] * wane_jumpR4rd_2[i,3]
+#n_R4rd_R13[,2] <- n_R4rd_wane[i,4] * wane_jumpR4rd_4[i,2]
+
+#n_R4rd_R14[,1] <- n_R4rd_wane[i,2] * wane_jumpR4rd_2[i,2]
+#n_R4rd_R14[,2] <- n_R4rd_wane[i,3] * wane_jumpR4rd_3[i,2]
+
+#n_R4rd_R23[,1] <- n_R4rd_wane[i,1] * wane_jumpR4rd_1[i,3]
+#n_R4rd_R23[,2] <- n_R4rd_wane[i,4] * wane_jumpR4rd_4[i,1]
+
+#n_R4rd_R24[,1] <- n_R4rd_wane[i,1] * wane_jumpR4rd_1[i,2]
+#n_R4rd_R24[,2] <- n_R4rd_wane[i,3] * wane_jumpR4rd_3[i,1]
+
+#n_R4rd_R34[,1] <- n_R4rd_wane[i,1] * wane_jumpR4rd_1[i,1]
+#n_R4rd_R34[,2] <- n_R4rd_wane[i,2] * wane_jumpR4rd_2[i,1]
+
+
+dim(n_R4rd_1)<-c(N_age,N_strain_1)
+dim(n_R4rd_2)<-c(N_age,N_strain_1)
+dim(n_R4rd_3)<-c(N_age,N_strain_1)
+dim(n_R4rd_4)<-c(N_age,N_strain_1)
+
+dim(n_R4rd_R12)       <- c(N_age, N_strain_2)
+dim(n_R4rd_R13)       <- c(N_age, N_strain_2)
+dim(n_R4rd_R14)       <- c(N_age, N_strain_2)
+dim(n_R4rd_R23)       <- c(N_age, N_strain_2)
+dim(n_R4rd_R24)       <- c(N_age, N_strain_2)
+dim(n_R4rd_R34)       <- c(N_age, N_strain_2)
+dim(wane_jumpR4rd_1)  <- c(N_age, N_strain_1)
+dim(wane_jumpR4rd_2)  <- c(N_age, N_strain_1)
+dim(wane_jumpR4rd_3)  <- c(N_age, N_strain_1)
+dim(wane_jumpR4rd_4)  <- c(N_age, N_strain_1)
+
   ##### Deaths 
   ###################################
   
@@ -3101,7 +3381,8 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   n_bS[] <- if (i==1) ((n_allDeath-n_bG[1]-n_bM[1])) else 0.0 
   
   pop_nonsec[]<-pop[i]*p_nonsecretor 
-   dim(pop_nonsec)<- N_age
+  dim(pop_nonsec)<- N_age
+  
   
   
   # Vaccination transitions - see index_states excel  -----------------------
@@ -3221,57 +3502,59 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   
   
   ## Initial states:
+
+    
    initial(G[])<-  pop_nonsec[i]
-  initial(M[])<-  0.0
+  initial(M[])<-  0
   initial(S[])<-  pop[i]-pop_nonsec[i]#  *(1-p_nonsecretor)
   initial(E[,])<- 0
   initial(I[,])<- if(i==5) 10 else 0
-  initial(A[,])<- 0
-  initial(R[,])<- 0
+  initial(A[,])<-0
+  initial(R[,])<-0 ### temp
   initial(E1[,])<-0
   initial(I1[,])<-0
   initial(A1[,])<-0
-  initial(R1[,])<-0
+  initial(R1[,])<-0 ### temp
   initial(E2[,])<-0
   initial(I2[,])<-0
   initial(A2[,])<-0
-  initial(R2[,])<-0
+  initial(R2[,])<-0 ### temp
   initial(E3[,])<-0
   initial(I3[,])<-0
   initial(A3[,])<-0
-  initial(R3[,])<-0
+  initial(R3[,])<-0 ### temp
   initial(E4[,])<-0
   initial(I4[,])<-0
   initial(A4[,])<-0
-  initial(R4[,])<-0
+  initial(R4[,])<-0 ### temp
   initial(E12[,])<-0
   initial(I12[,])<-0
   initial(A12[,])<-0
-  initial(R12[,])<-0
+  initial(R12[,])<-0 ### temp
   initial(E13[,])<-0
   initial(I13[,])<-0
   initial(A13[,])<-0
-  initial(R13[,])<-0
+  initial(R13[,])<-0 ### temp
   initial(E14[,])<-0
   initial(I14[,])<-0
   initial(A14[,])<-0
-  initial(R14[,])<-0
+  initial(R14[,])<-0 ### temp
   initial(E23[,])<-0
   initial(I23[,])<-0
   initial(A23[,])<-0
-  initial(R23[,])<-0
+  initial(R23[,])<-0 ### temp
   initial(E24[,])<-0
   initial(I24[,])<-0
   initial(A24[,])<-0
-  initial(R24[,])<-0
+  initial(R24[,])<-0 ### temp
   initial(E34[,])<-0
   initial(I34[,])<-0
   initial(A34[,])<-0
-  initial(R34[,])<-0
+  initial(R34[,])<-0 ### temp
   initial(E4rd[,])<-0
   initial(I4rd[,])<-0
   initial(A4rd[,])<-0
-  initial(R4rd[,])<-0
+  initial(R4rd[,])<-0 # TODO this is for debugging
   
   
   # Outputs
@@ -3328,10 +3611,10 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   initial(sus_re_gi3)<-0
   initial(sus_re_gii4)<-0
   initial(pop_all[])<-0
-
   
   
- #browser(phase = "update", when = time ==50)
+  
+  
   
   # Parameters --------------------------------------------------------------
   
@@ -3344,14 +3627,12 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   log_maternalAB    <- parameter()
   log_aduRR     <- parameter()
   imm_yr        <- parameter()
-  imm_fac       <- parameter()
   log_ratio_0   <- parameter()        # repfac_0/repfac_65p ≈ 136/51 ≈ 2.7
   log_ratio_5   <- parameter()         # repfac_5/repfac_65p ≈ 1444/51 ≈ 28  
   log_ratio_15  <- parameter()        # repfac_15/repfac_65p ≈ 150/51 ≈ 2.9
   log_repfac_65p<- parameter()         # reference: lowest underreporting
-  geno_frac       <-parameter(0.2)
-  season_lag <- parameter(12)
-  season_amp <- parameter(0.2)
+  season_lag<- 12
+  season_amp<- 0.13
   crossp_GI     <- parameter(0.05)
   crossp_GII    <- parameter(0.05)
   
@@ -3366,7 +3647,7 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   repfac_0   <- repfac_65p * exp(log_ratio_0)    # ~2.7x higher than elderly
   repfac_5   <- repfac_65p * exp(log_ratio_5)    # ~28x higher than elderly
   repfac_15  <- repfac_65p * exp(log_ratio_15)  # ~2.9x higher than elderly
-  
+ 
   
   # Fixed with default--------------------------------------------------------
   epsilon         <- parameter(1)
@@ -3381,7 +3662,7 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   t_campaign_stop <-parameter(180)
   hosp_rate_adult <-parameter(4.8/1e4)
   hosp_rate_elder <-parameter(43/1e4)
- 
+  geno_frac       <-parameter(0.2)
   
   # Fixed with NO default--------------------------------------------------------
   pop<- parameter()
@@ -3416,11 +3697,10 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   N_strain_1<-N_strain-1
   N_strain_2<-N_strain-2
   dim(aging_vec)<- N_age
-    dim(	G	)<-N_age
-
   dim(vaccination_coverage)<- N_age
   dim(vacc_switch_on)      <- N_age
   dim(campaign_switch)     <- N_age  
+  dim(	G	)<-N_age
   dim(	M	)<-N_age
   dim(	S	)<-N_age
   dim(	E	)<-c(N_age,N_strain)
@@ -3577,7 +3857,7 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   dim(n_ageoR4rd)<-c(N_age,N_strain)
   
   
-  
+
   dim(n_muG)<-N_age 
   dim(n_muM)<-N_age
   dim(n_muS)<-N_age
@@ -3654,14 +3934,14 @@ dim(p_RE3) <- c(N_age,N_strain_1,N_strain)
   dim(infections_day_gii)<- 4
   dim(infections_day_gi3)<- 4
   dim(infections_day_gi)<- 4
- 
+
   dim(reported_wk)<- N_age
   dim(death_reported_wk_all)<- N_age
   
   
   
   dim(	n_MS	)<-  N_age
-    dim(n_bG)   <- N_age
+  dim(n_bG)   <- N_age
   dim(	n_Mvacc	)<-  N_age
   
   

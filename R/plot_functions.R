@@ -7,6 +7,7 @@ plot_reported_strain<-function(strain,dat,num){
   
   df_d<-dat
  
+  browser()
   df_s <- as.data.frame(
     rowQuantiles((strain),
                  probs = c(0.025, 0.5, 0.975))

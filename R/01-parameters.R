@@ -3,6 +3,7 @@
 # -------------------------------------------------------------------------
 root    <- here::here()
 outfile <- file.path(root, "output", "parameters.qs2")
+outfile2 <- file.path(root, "output", "parameters_short.qs2")
 
 # Packages
 source(file.path(root, "R", "modify_attach.R"))
@@ -43,18 +44,109 @@ parameters<-list(
     0.0000924, #6
     0.0000874, #7
     0.0000891, #7-15
-    0.0002980, #16-25
+    0.0002980, #16-25 
     0.0005477, #26-35
     0.0011747, #36-45
     0.0026180, #46-55
     0.0064792, #56-65
     0.0163398+(1/(90-75))), #66-75 ##<--- adding the aging from 75 to 100 as a limit 
-    ages   =  c(1,2,3,4,5,6,7,15,25,35,45,55,65,75) # Upper end of age bands
+    ages   =  c(1,2,3,4,5,6,7,15,25,35,45,55,65,75), # Upper end of age bands
+  vaccination_coverage = seq(1,14)*0,
+  cfr        =c(
+    0.006658405,
+    0.006930603,
+    0.007165995,
+    0.00736015,
+    0.007712279,
+    0.00797422,
+    0.008300209,
+    0.009486607,
+    0.013072195,
+    0.018749172,
+    0.026713006,
+    0.038570177,
+    0.053864667,
+    0.091299783),
+  crossp_GI =0.05,
+  crossp_GII =0.05,
+  period_start=21366,
+  period_end  =21999
 )
 
+df<-data.frame(
+  rate=c(0.0002980, #16-25 
+         0.0005477, #26-35
+         0.0011747, #36-45
+         0.0026180, #46-55
+         0.0064792),
+  size =c(7866743,
+          7924991,
+          9349827,
+          7604325,
+          7028683))
+
+
+weighted_avg_rate <- sum(df$rate * df$size) / sum(df$size)
+
+
+df2<-data.frame(
+  rate=c(0.013072195,
+         0.018749172,
+         0.026713006,
+         0.038570177,
+         0.053864667),
+  size =c(7866743,
+          7924991,
+          9349827,
+          7604325,
+          7028683))
+
+weighted_avg_rate2 <- sum(df2$rate * df2$size) / sum(df2$size)
+
+
+
+
+parameters_short<-list(
+  tstep=tstep,
+  t_step=t_step,
+  sim_startdate=sim_startdate,
+  sim_enddate  = sim_enddate, 
+  time_vec     = seq(sim_startdate,sim_enddate,tstep),
+  weeks_vec    = seq(sim_startdate,sim_enddate,"week"),
+  years_vec    = seq(sim_startdate,sim_enddate,"year"),
+  mort_rates =c(   
+    0.0039640, #1
+    0.0002937, #2
+    0.0001537, #3
+    0.0001155, #4
+    0.0000924, #5
+    0.0000924, #6
+    0.0000874, #7
+    0.0000891, #7-15
+    weighted_avg_rate,# 15-65
+    0.0163398+(1/(90-75))), #66-75 ##<--- adding the aging from 75 to 100 as a limit 
+  ages   =  c(1,2,3,4,5,6,7,15,65,75), # Upper end of age bands
+  vaccination_coverage = seq(1,10)*0,
+  cfr        =c(
+    0.006658405,
+    0.006930603,
+    0.007165995,
+    0.00736015,
+    0.007712279,
+    0.00797422,
+    0.008300209,
+    0.009486607,
+    weighted_avg_rate2, 
+    0.091299783),
+  crossp_GI =0.05,
+  crossp_GII =0.05,
+  period_start=21366,
+  period_end  =21999
+)
 
 
 # -------------------------------------------------------------------------
 # Save data ---------------------------------------------------------------
 # -------------------------------------------------------------------------
 qs_save(parameters, outfile)
+qs_save(parameters_short, outfile2)
